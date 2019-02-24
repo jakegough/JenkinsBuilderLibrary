@@ -17,10 +17,10 @@ def updateBuildStatusFailed() {
 }
 
 def updateBuildStatus(state, description) {
-    gitCommit = git.getFullCommitHash()
+    gitCommitHash = git.getFullCommitHash()
     
     // a lot of help from: https://stackoverflow.com/questions/14274293/show-current-state-of-jenkins-build-on-github-repo
-    postToUrl = "https://api.github.com/repos/${username}/${repository}/statuses/${git_commit}"
+    postToUrl = "https://api.github.com/repos/${username}/${repository}/statuses/${gitCommitHash}"
 
     bodyJson = \
 """{ 
