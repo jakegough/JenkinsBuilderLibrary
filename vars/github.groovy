@@ -1,8 +1,6 @@
-import groovy.transform.Field
-
-@Field username = ''
-@Field repository = ''
-@Field tokenCredentialId = ''
+username = ''
+repository = ''
+tokenCredentialId = ''
 
 def updateBuildStatusInProgress() {
     updateBuildStatus("pending", "Build in progress... cross your fingers...");
