@@ -1,6 +1,6 @@
-username = ''
-repository = ''
-tokenCredentialId = ''
+def username = ''
+def repository = ''
+def tokenCredentialId = ''
 
 def updateBuildStatusInProgress() {
     updateBuildStatus("pending", "Build in progress... cross your fingers...");
