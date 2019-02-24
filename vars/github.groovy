@@ -1,8 +1,8 @@
 import groovy.transform.Field
 
-@Field username = "default"
-@Field repository = "default"
-@Field tokenCredentialId = "default"
+@Field username = "missing_github_username"
+@Field repository = "missing_github_repository"
+@Field tokenCredentialId = "missing_github_tokenCredentialId"
 
 def updateBuildStatusInProgress() {
     updateBuildStatus("pending", "Build in progress... cross your fingers...");
@@ -29,7 +29,7 @@ def updateBuildStatus(state, description) {
     "description": "${description}" 
 }"""
 
-	withCredentials([string(credentialsId: "$tokenCredentialId", variable: 'TOKEN')]) {
+	withCredentials([string(credentialsId: tokenCredentialId, variable: 'TOKEN')]) {
 		def response = httpRequest \
 			customHeaders: [[name: 'Authorization', value: "token $TOKEN"]], \
 			contentType: 'APPLICATION_JSON', \
