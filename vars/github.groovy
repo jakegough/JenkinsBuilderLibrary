@@ -1,22 +1,18 @@
 import groovy.transform.Field
 
-@Field username = "missing_github_username"
-@Field repository = "missing_github_repository"
-@Field tokenCredentialId = "missing_github_tokenCredentialId"
-
-def updateBuildStatusInProgress() {
-    updateBuildStatus("pending", "Build in progress... cross your fingers...");
+def updateBuildStatusInProgress(username, repository, tokenCredentialId) {
+    updateBuildStatus(username, repository, tokenCredentialId, "pending", "Build in progress... cross your fingers...");
 }
 
-def updateBuildStatusSuccessful() {
-    updateBuildStatus("success", "Build passed :)");
+def updateBuildStatusSuccessful(username, repository, tokenCredentialId) {
+    updateBuildStatus(username, repository, tokenCredentialId, "success", "Build passed :)");
 }
 
-def updateBuildStatusFailed() {
-    updateBuildStatus("failure", "Build failed :(");
+def updateBuildStatusFailed(username, repository, tokenCredentialId) {
+    updateBuildStatus(username, repository, tokenCredentialId, "failure", "Build failed :(");
 }
 
-def updateBuildStatus(state, description) {
+def updateBuildStatus(username, repository, tokenCredentialId, state, description) {
     gitCommitHash = git.getFullCommitHash()
     
     // a lot of help from: https://stackoverflow.com/questions/14274293/show-current-state-of-jenkins-build-on-github-repo
