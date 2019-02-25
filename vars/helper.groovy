@@ -30,8 +30,8 @@ def updateGitHubBuildStatusFailed() {
     github.updateBuildStatusFailed(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository);
 }
 
-def pushNugetPackage(nupkgFile, credentialsId = null, sourceUrl = null) {
+def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
     credentialsIdOrDefault = credentialsId ?: nuGetCredentialsId;
     sourceUrlOrDefault = sourceUrl ?: nuGetSourceUrl;
-    nuget.pushNugetPackage(nupkgFile, credentialsIdOrDefault, sourceUrlOrDefault);
+    nuget.pushNugetPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
 }
