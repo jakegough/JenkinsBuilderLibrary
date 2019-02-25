@@ -5,6 +5,8 @@ import groovy.transform.Field
 @Field gitHubTokenCredentialsId = "missing_gitHubTokenCredentialsId";
 @Field nuGetCredentialsId = "missing_nuGetCredentialsId";
 @Field nuGetSourceUrl = null;
+@Field dockerRegistryCredentialsId = "missing_dockerRegistryCredentialsId";
+@Field dockerRegistry = null;
 
 def getAuthor(){
     return git.getAuthor();
@@ -33,5 +35,11 @@ def updateGitHubBuildStatusFailed() {
 def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
     credentialsIdOrDefault = credentialsId ?: nuGetCredentialsId;
     sourceUrlOrDefault = sourceUrl ?: nuGetSourceUrl;
-    nuget.pushNugetPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
+    nuget.pushPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
+}
+
+def pushDockerImage(localImage, registryImage, credentialsId = null, registry = null) {
+    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
+    registryOrDefault = registry ?: dockerRegistry;
+    docker.pushImage(imageName, originalTagName, newTagName, credentialsIdOrDefault, registryOrDefault);
 }

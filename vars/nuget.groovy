@@ -2,7 +2,7 @@ import groovy.transform.Field
 
 @Field nugetDockerImage="microsoft/dotnet:2.0-sdk";
 
-def pushNugetPackage(nupkgDir, credentialsId, sourceUrl = null) {
+def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
 
     sourceUrlOrDefault = sourceUrl ?: "https://www.nuget.org/api/v2/package";
 
