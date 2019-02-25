@@ -1,18 +1,18 @@
 import groovy.transform.Field
 
-def updateBuildStatusInProgress(username, repository, tokenCredentialId) {
-    updateBuildStatus(username, repository, tokenCredentialId, "pending", "Build in progress... cross your fingers...");
+def updateBuildStatusInProgress(tokenCredentialsId, username, repository) {
+    updateBuildStatus(tokenCredentialsId, username, repository, "pending", "Build in progress... cross your fingers...");
 }
 
-def updateBuildStatusSuccessful(username, repository, tokenCredentialId) {
-    updateBuildStatus(username, repository, tokenCredentialId, "success", "Build passed :)");
+def updateBuildStatusSuccessful(tokenCredentialsId, username, repository) {
+    updateBuildStatus(tokenCredentialsId, username, repository, "success", "Build passed :)");
 }
 
-def updateBuildStatusFailed(username, repository, tokenCredentialId) {
-    updateBuildStatus(username, repository, tokenCredentialId, "failure", "Build failed :(");
+def updateBuildStatusFailed(tokenCredentialsId, username, repository) {
+    updateBuildStatus(tokenCredentialsId, username, repository, "failure", "Build failed :(");
 }
 
-def updateBuildStatus(username, repository, tokenCredentialId, state, description) {
+def updateBuildStatus(tokenCredentialsId, username, repository, state, description) {
     gitCommitHash = git.getFullCommitHash()
     
     // a lot of help from: https://stackoverflow.com/questions/14274293/show-current-state-of-jenkins-build-on-github-repo
@@ -25,7 +25,7 @@ def updateBuildStatus(username, repository, tokenCredentialId, state, descriptio
     "description": "${description}" 
 }"""
 
-	withCredentials([string(credentialsId: tokenCredentialId, variable: 'TOKEN')]) {
+	withCredentials([string(credentialsId: tokenCredentialsId, variable: 'TOKEN')]) {
 		def response = httpRequest \
 			customHeaders: [[name: 'Authorization', value: "token $TOKEN"]], \
 			contentType: 'APPLICATION_JSON', \
