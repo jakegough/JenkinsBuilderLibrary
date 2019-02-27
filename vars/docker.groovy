@@ -11,3 +11,7 @@ def pushImage(localImage, registryImage, credentialsId, registryUrl = null) {
     sh "docker tag $localImage ${registryPrefix}$registryImage"
     sh "docker push ${registryPrefix}$registryImage"
 }
+
+def tag(sourceImage, targetImage) {
+    sh "docker tag $sourceImage $targetImage"
+}

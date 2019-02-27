@@ -43,3 +43,7 @@ def pushDockerImage(localImage, registryImage, credentialsId = null, registry = 
     registryOrDefault = registry ?: dockerRegistry;
     docker.pushImage(imageName, originalTagName, newTagName, credentialsIdOrDefault, registryOrDefault);
 }
+
+def tagDockerImage(sourceImage, targetImage) {
+    docker.tag(sourceImage, targetImage);
+}
