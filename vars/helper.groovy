@@ -5,7 +5,7 @@ import groovy.transform.Field
 @Field gitHubTokenCredentialsId = "missing_gitHubTokenCredentialsId";
 @Field bitbucketUsername = "missing_bitbucketUsername";
 @Field bitbucketRepository = "missing_bitbucketRepository";
-@Field bitbucketTokenCredentialsId = "missing_bitbucketTokenCredentialsId";
+@Field bitbucketUserPassCredentialsId = "missing_bitbucketUserPassCredentialsId";
 @Field nuGetCredentialsId = "missing_nuGetCredentialsId";
 @Field nuGetSourceUrl = null;
 @Field dockerRegistryCredentialsId = "missing_dockerRegistryCredentialsId";
@@ -24,15 +24,15 @@ def getFullGitCommitHash() {
 }
 
 def updateBitbucketBuildStatusInProgress() {
-    bitbucket.updateBuildStatusInProgress(bitbucketTokenCredentialsId, bitbucketUsername, bitbucketRepository);
+    bitbucket.updateBuildStatusInProgress(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository);
 }
 
 def updateBitbucketBuildStatusSuccessful() {
-    bitbucket.updateBuildStatusSuccessful(bitbucketTokenCredentialsId, bitbucketUsername, bitbucketRepository);
+    bitbucket.updateBuildStatusSuccessful(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository);
 }
 
 def updateBitbucketBuildStatusFailed() {
-    bitbucket.updateBuildStatusFailed(bitbucketTokenCredentialsId, bitbucketUsername, bitbucketRepository);
+    bitbucket.updateBuildStatusFailed(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository);
 }
 
 def updateGitHubBuildStatusInProgress() {
