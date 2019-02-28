@@ -3,6 +3,9 @@ import groovy.transform.Field
 @Field gitHubUsername = "missing_gitHubUsername";
 @Field gitHubRepository = "missing_gitHubRepository";
 @Field gitHubTokenCredentialsId = "missing_gitHubTokenCredentialsId";
+@Field bitbucketUsername = "missing_bitbucketUsername";
+@Field bitbucketRepository = "missing_bitbucketRepository";
+@Field bitbucketTokenCredentialsId = "missing_bitbucketTokenCredentialsId";
 @Field nuGetCredentialsId = "missing_nuGetCredentialsId";
 @Field nuGetSourceUrl = null;
 @Field dockerRegistryCredentialsId = "missing_dockerRegistryCredentialsId";
@@ -18,6 +21,18 @@ def getShortGitCommitHash() {
 
 def getFullGitCommitHash() {
     return git.getFullCommitHash();
+}
+
+def updateBitbucketBuildStatusInProgress() {
+    bitbucket.updateBuildStatusInProgress(bitbucketTokenCredentialsId, bitbucketUsername, bitbucketRepository);
+}
+
+def updateBitbucketBuildStatusSuccessful() {
+    bitbucket.updateBuildStatusSuccessful(bitbucketTokenCredentialsId, bitbucketUsername, bitbucketRepository);
+}
+
+def updateBitbucketBuildStatusFailed() {
+    bitbucket.updateBuildStatusFailed(bitbucketTokenCredentialsId, bitbucketUsername, bitbucketRepository);
 }
 
 def updateGitHubBuildStatusInProgress() {
