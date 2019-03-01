@@ -1,5 +1,7 @@
-node('linux && make && docker && kubectl') {
-  docker.image('lachlanevenson/k8s-kubectl:v1.13.4').inside { c ->
-    sh "echo ${c.id}"
+node('linux && make && docker') {
+  docker.image('lachlanevenson/k8s-kubectl:v1.13.4').inside {
+    withCredentials([file(credentialsId: 'k8s-digitalocean', variable: 'KUBECONFIG')]) {
+      sh 'kubectl version'
+    }
   }
 }
