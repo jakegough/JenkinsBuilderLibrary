@@ -1,10 +1,10 @@
 import groovy.transform.Field
 
-@Field gitHubUsername = "missing_gitHubUsername";
-@Field gitHubRepository = "missing_gitHubRepository";
+@Field gitHubUsername = null;
+@Field gitHubRepository = null;
 @Field gitHubTokenCredentialsId = "missing_gitHubTokenCredentialsId";
-@Field bitbucketUsername = "missing_bitbucketUsername";
-@Field bitbucketRepository = "missing_bitbucketRepository";
+@Field bitbucketUsername = null;
+@Field bitbucketRepository = null;
 @Field bitbucketUserPassCredentialsId = "missing_bitbucketUserPassCredentialsId";
 @Field nuGetCredentialsId = "missing_nuGetCredentialsId";
 @Field nuGetSourceUrl = null;
@@ -25,28 +25,61 @@ def getFullGitCommitHash() {
     return git.getFullCommitHash();
 }
 
-def updateBitbucketBuildStatusInProgress() {
-    bitbucket.updateBuildStatusInProgress(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository);
+def updateBuildStatusInProgress(gitCommitHash = null) {
+    if (gitHubRepository)
+    {
+        updateGitHubBuildStatusInProgress(gitCommitHash)
+    }
+    if (bitbucketRepository)
+    {
+        updateBitbucketBuildStatusInProgress(gitCommitHash)
+    }
 }
 
-def updateBitbucketBuildStatusSuccessful() {
-    bitbucket.updateBuildStatusSuccessful(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository);
+def updateBuildStatusSuccessful(gitCommitHash = null) {
+    if (gitHubRepository)
+    {
+        updateGitHubBuildStatusSuccessful(gitCommitHash)
+    }
+    if (bitbucketRepository)
+    {
+        updateBitbucketBuildStatusSuccessful(gitCommitHash)
+    }
 }
 
-def updateBitbucketBuildStatusFailed() {
-    bitbucket.updateBuildStatusFailed(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository);
+def updateBuildStatusFailed(gitCommitHash = null) {
+    if (gitHubRepository)
+    {
+        updateGitHubBuildStatusFailed(gitCommitHash)
+    }
+    if (bitbucketRepository)
+    {
+        updateBitbucketBuildStatusFailed(gitCommitHash)
+    }
 }
 
-def updateGitHubBuildStatusInProgress() {
-    github.updateBuildStatusInProgress(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository);
+def updateBitbucketBuildStatusInProgress(gitCommitHash = null) {
+    bitbucket.updateBuildStatusInProgress(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
 }
 
-def updateGitHubBuildStatusSuccessful() {
-    github.updateBuildStatusSuccessful(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository);
+def updateBitbucketBuildStatusSuccessful(gitCommitHash = null) {
+    bitbucket.updateBuildStatusSuccessful(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
 }
 
-def updateGitHubBuildStatusFailed() {
-    github.updateBuildStatusFailed(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository);
+def updateBitbucketBuildStatusFailed(gitCommitHash = null) {
+    bitbucket.updateBuildStatusFailed(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
+}
+
+def updateGitHubBuildStatusInProgress(gitCommitHash = null) {
+    github.updateBuildStatusInProgress(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
+}
+
+def updateGitHubBuildStatusSuccessful(gitCommitHash = null) {
+    github.updateBuildStatusSuccessful(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
+}
+
+def updateGitHubBuildStatusFailed(gitCommitHash = null) {
+    github.updateBuildStatusFailed(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
 }
 
 def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
