@@ -12,6 +12,9 @@ import groovy.transform.Field
 @Field dockerRegistry = null;
 @Field kubectlFileCredentialsId = "missing_kubectlFileCredentialsId";
 @Field kubectlVersion = null;
+@Field slackBotTokenCredentialsId = "missing_slackBotTokenCredentialsId";
+@Field slackChannel = "missing_slackChannel";
+@Field slackBotDisplayName = "missing_slackBotDisplayName";
 
 def getAuthor(){
     return git.getAuthor();
@@ -67,4 +70,8 @@ def tagDockerImage(sourceImage, targetImage) {
 
 def withKubectl(callback) {
     kubectl.run(kubectlFileCredentialsId, callback, kubectlVersion);
+}
+
+def postSlackMessage(text) {
+    kubectl.postMessage(slackBotTokenCredentialsId, slackChannel, slackBotDisplayName, text);
 }

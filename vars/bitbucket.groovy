@@ -29,7 +29,7 @@ def updateBuildStatus(userPassCredentialsId, username, repository, state, descri
 
 	def response = httpRequest \
         authentication: userPassCredentialsId, \
-        contentType: 'APPLICATION_JSON', \
+        contentType: 'application/json', \
         httpMode: 'POST', \
         requestBody: bodyJson, \
         url: postToUrl
