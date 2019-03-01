@@ -20,10 +20,10 @@ def run(nodeLabel, callback) {
       checkout scm
     }
     
-    def gitCommit = helper.getFullGitCommitHash()    
+    def gitCommit = getFullGitCommitHash()    
     
     stage('Start') {
-      helper.updateBuildStatusInProgress(gitCommit)
+      updateBuildStatusInProgress(gitCommit)
     }
 
     try
@@ -31,7 +31,7 @@ def run(nodeLabel, callback) {
       callback()
     }
     catch(Exception e) {
-      helper.updateBuildStatusFailed(gitCommit)
+      updateBuildStatusFailed(gitCommit)
       throw e
     }
     finally {
@@ -39,7 +39,7 @@ def run(nodeLabel, callback) {
     }
 
     stage('Finish') {
-      helper.updateBuildStatusSuccessful(gitCommit)
+      updateBuildStatusSuccessful(gitCommit)
     }    
   }
 }
