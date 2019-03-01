@@ -1,6 +1,6 @@
 library 'JenkinsBuilderLibrary@test-kubectl'
 
-// helper.kubectlFileCredentialsId = 'k8s-digitalocean';
+// helper.kubectlKubeConfigFileCredentialsId = 'k8s-digitalocean';
 
 node('linux && docker') {
 //  helper.withKubectl {

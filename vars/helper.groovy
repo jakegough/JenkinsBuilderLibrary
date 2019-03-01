@@ -10,7 +10,7 @@ import groovy.transform.Field
 @Field nuGetSourceUrl = null;
 @Field dockerRegistryCredentialsId = "missing_dockerRegistryCredentialsId";
 @Field dockerRegistry = null;
-@Field kubectlFileCredentialsId = "missing_kubectlFileCredentialsId";
+@Field kubectlKubeConfigFileCredentialsId = "missing_kubectlKubeConfigFileCredentialsId";
 @Field kubectlVersion = null;
 
 def getAuthor(){
@@ -66,5 +66,13 @@ def tagDockerImage(sourceImage, targetImage) {
 }
 
 def withKubectl(callback) {
-    kubernetes.withKubectl(kubectlFileCredentialsId, callback, kubectlVersion);
+    kubernetes.withKubectl(kubectlKubeConfigFileCredentialsId, kubectlVersion, callback);
+}
+
+def kubectlApply(path) {
+    kubernetes.kubectlApply(kubectlKubeConfigFileCredentialsId, kubectlVersion, path);
+}
+
+def kubectlApplyDryRun(path) {
+    kubernetes.kubectlApplyDryRun(kubectlKubeConfigFileCredentialsId, kubectlVersion, path);
 }
