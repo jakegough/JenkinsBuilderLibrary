@@ -13,6 +13,37 @@ import groovy.transform.Field
 @Field kubectlKubeConfigFileCredentialsId = "missing_kubectlKubeConfigFileCredentialsId";
 @Field kubectlVersion = null;
 
+def run(nodeLabel, callback) {
+  node(nodeLabel) {
+    stage('Clone') {
+      cleanWs()
+      checkout scm
+    }
+    
+    def gitCommit = helper.getFullGitCommitHash()    
+    
+    stage('Start') {
+      helper.updateBuildStatusInProgress(gitCommit)
+    }
+
+    try
+    {
+      callback()
+    }
+    catch(Exception e) {
+      helper.updateBuildStatusFailed(gitCommit)
+      throw e
+    }
+    finally {
+      cleanWs()
+    }
+
+    stage('Finish') {
+      helper.updateBuildStatusSuccessful(gitCommit)
+    }    
+  }
+}
+
 def getAuthor(){
     return git.getAuthor();
 }
