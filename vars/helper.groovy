@@ -7,6 +7,8 @@ import groovy.transform.Field
 @Field nuGetSourceUrl = null;
 @Field dockerRegistryCredentialsId = "missing_dockerRegistryCredentialsId";
 @Field dockerRegistry = null;
+@Field kubectlFileCredentialsId = "missing_kubectlFileCredentialsId";
+@Field kubectlVersion = null;
 
 def getAuthor(){
     return git.getAuthor();
@@ -46,4 +48,8 @@ def pushDockerImage(localImage, registryImage, credentialsId = null, registry = 
 
 def tagDockerImage(sourceImage, targetImage) {
     docker.tag(sourceImage, targetImage);
+}
+
+def withKubectl(callback) {
+    kubectl.run(kubectlFileCredentialsId, callback, kubectlVersion);
 }
