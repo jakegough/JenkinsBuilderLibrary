@@ -66,5 +66,5 @@ def tagDockerImage(sourceImage, targetImage) {
 }
 
 def withKubectl(callback) {
-    kubectl.run(kubectlFileCredentialsId, callback, kubectlVersion);
+    kubernetes.withKubectl(kubectlFileCredentialsId, callback, kubectlVersion);
 }
