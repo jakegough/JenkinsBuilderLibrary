@@ -56,6 +56,14 @@ def getFullGitCommitHash() {
     return git.getFullCommitHash();
 }
 
+def getFilesChangedInBranch(patterns) {
+    return git.getFilesChangedInBranch(patterns);
+}
+
+def getFilesChangedInLastCommit(patterns) {
+    return git.getFilesChangedInLastCommit(patterns);
+}
+
 def updateBuildStatusInProgress(gitCommitHash = null) {
     if (gitHubRepository)
     {
