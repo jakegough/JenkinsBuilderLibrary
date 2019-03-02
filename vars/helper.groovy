@@ -49,6 +49,15 @@ def run(nodeLabel, callback) {
   }
 }
 
+def getTimestamp() {
+    if (isUnix()) {
+        return sh(returnStdout: true, script: "date +'%Y%m%d%H%M%S'").toString().trim()
+    }
+    else {
+        return bat(returnStdout: true, script: "echo %date:~-4,4%%date:~-10,2%%date:~-7,2%%time:~-11,2%%time:~-8,2%%time:~-5,2%").toString().trim()
+    }
+}
+
 def getAuthor(){
     return git.getAuthor();
 }

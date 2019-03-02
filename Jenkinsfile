@@ -1,9 +1,23 @@
-library 'JenkinsBuilderLibrary@test-kubectl'
+library 'JenkinsBuilderLibrary'
 
-// helper.kubectlKubeConfigFileCredentialsId = 'k8s-digitalocean';
+testWithNode('linux', {
+    assert helper.getTimestamp() != null     
+})
 
-node('linux && docker') {
-//  helper.withKubectl {
-//    sh 'kubectl version'
-//  }
+testWithNode('windows', {
+    assert helper.getTimestamp() != null     
+})
+
+testWithNode('linux && docker', {
+    helper.withKubectl {
+        sh 'kubectl --help'
+    }
+})
+
+def testWithNode(nodeLabel, callback) {
+    node(nodeLabel) {
+        stage(nodeLabel) {
+            callback()
+        }        
+    }
 }
