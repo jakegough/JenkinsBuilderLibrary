@@ -8,11 +8,11 @@ testWithNode('windows', {
     assert helper.getTimestamp() != null     
 })
 
-testWithNode('linux && docker', {
-    helper.withKubectl {
-        sh 'kubectl --help'
-    }
-})
+//testWithNode('linux && docker', {
+//    helper.withKubectl {
+//        sh 'kubectl --help'
+//    }
+//})
 
 def testWithNode(nodeLabel, callback) {
     node(nodeLabel) {
