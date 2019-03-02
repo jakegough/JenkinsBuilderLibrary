@@ -12,6 +12,7 @@ import groovy.transform.Field
 @Field dockerRegistry = null;
 @Field kubectlKubeConfigFileCredentialsId = "missing_kubectlKubeConfigFileCredentialsId";
 @Field kubectlVersion = null;
+@Field cleanWsExcludePattern = null;
 
 def run(nodeLabel, callback) {
   node(nodeLabel) {
@@ -35,9 +36,13 @@ def run(nodeLabel, callback) {
       throw e
     }
     finally {
-      cleanWs()
+        if (cleanWsExcludePattern) {
+            cleanWs(deleteDirs: true, patterns: [[type: 'EXCLUDE', pattern: cleanWsExcludePattern]])
+        }
+        else {
+            cleanWs()
+        }      
     }
-
     stage('Finish') {
       updateBuildStatusSuccessful(gitCommit)
     }    
