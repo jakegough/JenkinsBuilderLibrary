@@ -25,5 +25,9 @@ def push(image) {
 }
 
 def removeImage(image) {
-    sh "docker rmi $image"
+    sh "docker rmi $image || echo 'image $image not found'"
+}
+
+def removeContainer(contaimer) {
+    sh "docker rm $contaimer || echo 'contaimer $contaimer not found'"
 }

@@ -60,23 +60,23 @@ def getTimestamp() {
 }
 
 def getAuthor(){
-    return git.getAuthor();
+    return gitHelper.getAuthor();
 }
 
 def getShortGitCommitHash() {
-    return git.getShortCommitHash();
+    return gitHelper.getShortCommitHash();
 }
 
 def getFullGitCommitHash() {
-    return git.getFullCommitHash();
+    return gitHelper.getFullCommitHash();
 }
 
 def getFilesChangedInBranch(patterns) {
-    return git.getFilesChangedInBranch(patterns);
+    return gitHelper.getFilesChangedInBranch(patterns);
 }
 
 def getFilesChangedInLastCommit(patterns) {
-    return git.getFilesChangedInLastCommit(patterns);
+    return gitHelper.getFilesChangedInLastCommit(patterns);
 }
 
 def updateBuildStatusInProgress(gitCommitHash = null) {
@@ -113,68 +113,68 @@ def updateBuildStatusFailed(gitCommitHash = null) {
 }
 
 def updateBitbucketBuildStatusInProgress(gitCommitHash = null) {
-    bitbucket.updateBuildStatusInProgress(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
+    bitbucketHelper.updateBuildStatusInProgress(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
 }
 
 def updateBitbucketBuildStatusSuccessful(gitCommitHash = null) {
-    bitbucket.updateBuildStatusSuccessful(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
+    bitbucketHelper.updateBuildStatusSuccessful(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
 }
 
 def updateBitbucketBuildStatusFailed(gitCommitHash = null) {
-    bitbucket.updateBuildStatusFailed(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
+    bitbucketHelper.updateBuildStatusFailed(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
 }
 
 def updateGitHubBuildStatusInProgress(gitCommitHash = null) {
-    github.updateBuildStatusInProgress(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
+    githubHelper.updateBuildStatusInProgress(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
 }
 
 def updateGitHubBuildStatusSuccessful(gitCommitHash = null) {
-    github.updateBuildStatusSuccessful(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
+    githubHelper.updateBuildStatusSuccessful(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
 }
 
 def updateGitHubBuildStatusFailed(gitCommitHash = null) {
-    github.updateBuildStatusFailed(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
+    githubHelper.updateBuildStatusFailed(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
 }
 
 def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
     credentialsIdOrDefault = credentialsId ?: nuGetCredentialsId;
     sourceUrlOrDefault = sourceUrl ?: nuGetSourceUrl;
-    nuget.pushPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
+    nugetHelper.pushPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
 }
 
 def getDockerRegistryImageName(image = null, registry = null, credentialsId = null) {
     imageOrDefault = image ?: dockerImageName;
     registryOrDefault = registry ?: dockerRegistry;
     credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;        
-    return docker.getRegistryImageName(imageOrDefault, credentialsIdOrDefault, registryOrDefault)
+    return dockerHelper.getRegistryImageName(imageOrDefault, credentialsIdOrDefault, registryOrDefault)
 }
 
 def tagDockerImage(sourceImage, targetImage) {
-    docker.tag(sourceImage, targetImage);
+    dockerHelper.tag(sourceImage, targetImage);
 }
 
 def dockerLogin(registry = null, credentialsId = null) {
     registryOrDefault = registry ?: dockerRegistry;
     credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;    
-    docker.login(credentialsIdOrDefault, registryOrDefault);
+    dockerHelper.login(credentialsIdOrDefault, registryOrDefault);
 }
 
 def pushDockerImage(image) {
-    docker.pushImage(image, credentialsIdOrDefault, registryOrDefault);
+    dockerHelper.pushImage(image, credentialsIdOrDefault, registryOrDefault);
 }
 
 def removeDockerImage(image) {
-    docker.removeImage(image);
+    dockerHelper.removeImage(image);
 }
 
 def withKubectl(callback) {
-    kubernetes.withKubectl(kubectlKubeConfigFileCredentialsId, kubectlVersion, callback);
+    kubernetesHelper.withKubectl(kubectlKubeConfigFileCredentialsId, kubectlVersion, callback);
 }
 
 def kubectlApply(path) {
-    kubernetes.kubectlApply(kubectlKubeConfigFileCredentialsId, kubectlVersion, path);
+    kubernetesHelper.kubectlApply(kubectlKubeConfigFileCredentialsId, kubectlVersion, path);
 }
 
 def kubectlApplyDryRun(path) {
-    kubernetes.kubectlApplyDryRun(kubectlKubeConfigFileCredentialsId, kubectlVersion, path);
+    kubernetesHelper.kubectlApplyDryRun(kubectlKubeConfigFileCredentialsId, kubectlVersion, path);
 }
