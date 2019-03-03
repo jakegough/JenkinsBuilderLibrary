@@ -5,7 +5,7 @@ def getRegistryImageName(image, credentialsId, registry = null) {
         registryPrefix = "$registry/"
     }
 
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'docker_registry_user']) {
+    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'docker_registry_user')]) {
         return registryPrefix + "$docker_registry_user/$image"
     }
 }
