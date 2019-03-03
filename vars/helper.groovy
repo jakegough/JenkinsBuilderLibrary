@@ -160,7 +160,7 @@ def dockerLogin(registry = null, credentialsId = null) {
 }
 
 def pushDockerImage(image) {
-    dockerHelper.pushImage(image, credentialsIdOrDefault, registryOrDefault);
+    dockerHelper.pushImage(image);
 }
 
 def removeDockerImage(image) {
