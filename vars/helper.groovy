@@ -141,14 +141,22 @@ def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
     nuget.pushPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
 }
 
-def pushDockerImage(localImage, registryImage, credentialsId = null, registry = null) {
-    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
-    registryOrDefault = registry ?: dockerRegistry;
-    docker.pushImage(imageName, originalTagName, newTagName, credentialsIdOrDefault, registryOrDefault);
-}
-
 def tagDockerImage(sourceImage, targetImage) {
     docker.tag(sourceImage, targetImage);
+}
+
+def dockerLogin(credentialsId = null, registry = null) {
+    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
+    registryOrDefault = registry ?: dockerRegistry;
+    docker.login(credentialsIdOrDefault, registryOrDefault);
+}
+
+def pushDockerImage(image) {
+    docker.pushImage(image, credentialsIdOrDefault, registryOrDefault);
+}
+
+def removeDockerImage(image) {
+    docker.removeImage(image);
 }
 
 def withKubectl(callback) {
