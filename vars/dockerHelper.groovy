@@ -20,7 +20,7 @@ def login(credentialsId, registry = null) {
     }
 }
 
-def push(image) {
+def pushImage(image) {
     sh "docker push $image"
 }
 
