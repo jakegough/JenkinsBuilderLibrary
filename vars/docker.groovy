@@ -1,3 +1,15 @@
+def getRegistryImageName(image, credentialsId, registry = null) {
+    def registryPrefix = null
+
+    if (registry) {
+        registryPrefix = "$registry/"
+    }
+
+    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'docker_registry_user')]) {
+        return "${registryPrefix}${docker_registry_user}/$image"
+    }
+}
+
 def tag(sourceImage, targetImage) {
     sh "docker tag $sourceImage $targetImage"
 }

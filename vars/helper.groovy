@@ -10,6 +10,7 @@ import groovy.transform.Field
 @Field nuGetSourceUrl = null;
 @Field dockerRegistryCredentialsId = "missing_dockerRegistryCredentialsId";
 @Field dockerRegistry = null;
+@Field dockerImageName = null;
 @Field kubectlKubeConfigFileCredentialsId = "missing_kubectlKubeConfigFileCredentialsId";
 @Field kubectlVersion = null;
 @Field cleanWsExcludePattern = null;
@@ -141,13 +142,20 @@ def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
     nuget.pushPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
 }
 
+def getDockerRegistryImageName(image = null, registry = null, credentialsId = null) {
+    imageOrDefault = image ?: dockerImageName;
+    registryOrDefault = registry ?: dockerRegistry;
+    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;        
+    return docker.getRegistryImageName(imageOrDefault, credentialsIdOrDefault, registryOrDefault)
+}
+
 def tagDockerImage(sourceImage, targetImage) {
     docker.tag(sourceImage, targetImage);
 }
 
-def dockerLogin(credentialsId = null, registry = null) {
-    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
+def dockerLogin(registry = null, credentialsId = null) {
     registryOrDefault = registry ?: dockerRegistry;
+    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;    
     docker.login(credentialsIdOrDefault, registryOrDefault);
 }
 
