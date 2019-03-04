@@ -40,9 +40,9 @@ def run(nodeLabel, callback) {
     finally {
         if (xunitTestResultsPattern) {
             xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
-            archiveArtifacts artifacts: xunitTestResultsPattern, allowEmptyArchive : true
+            //archiveArtifacts artifacts: xunitTestResultsPattern, allowEmptyArchive : true
         }
-        
+
         if (cleanWsExcludePattern) {
             cleanWs(deleteDirs: true, patterns: [[type: 'EXCLUDE', pattern: cleanWsExcludePattern]])
         }
