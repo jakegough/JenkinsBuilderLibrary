@@ -18,6 +18,7 @@ import groovy.transform.Field
 
 def run(nodeLabel, callback) {
   node(nodeLabel) {
+    // requires ansiColor plugin: https://wiki.jenkins.io/display/JENKINS/AnsiColor+Plugin
     ansiColor('xterm') {
 
       stage('Clone') {
@@ -41,6 +42,7 @@ def run(nodeLabel, callback) {
       }
       finally {
         if (xunitTestResultsPattern) {
+          // requires xunit plugin: https://plugins.jenkins.io/xunit
           xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
         }
 
