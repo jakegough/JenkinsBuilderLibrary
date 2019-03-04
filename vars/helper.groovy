@@ -169,5 +169,5 @@ def kubectlApplyDryRun(path) {
 }
 
 def postSlackMessage(text) {
-    kubectl.postMessage(slackBotTokenCredentialsId, slackChannel, slackBotDisplayName, text);
+    slackHelper.postMessage(slackBotTokenCredentialsId, slackChannel, slackBotDisplayName, text);
 }
