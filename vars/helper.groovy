@@ -14,6 +14,7 @@ import groovy.transform.Field
 @Field kubectlKubeConfigFileCredentialsId = "missing_kubectlKubeConfigFileCredentialsId";
 @Field kubectlVersion = null;
 @Field cleanWsExcludePattern = null;
+@Field xunitTestResultsPattern = null;
 
 def run(nodeLabel, callback) {
   node(nodeLabel) {
@@ -37,7 +38,11 @@ def run(nodeLabel, callback) {
       throw e
     }
     finally {
-        if (cleanWsExcludePattern) {
+        if (xunitTestResultsPattern) {
+            xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
+            cleanWs(deleteDirs: true, patterns: [[type: 'EXCLUDE', pattern: xunitTestResultsPattern]])
+        }
+        else if (cleanWsExcludePattern) {
             cleanWs(deleteDirs: true, patterns: [[type: 'EXCLUDE', pattern: cleanWsExcludePattern]])
         }
         else {
