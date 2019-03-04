@@ -18,41 +18,43 @@ import groovy.transform.Field
 
 def run(nodeLabel, callback) {
   node(nodeLabel) {
-    stage('Clone') {
-      cleanWs()
-      checkout scm
-    }
-    
-    def gitCommit = getFullGitCommitHash()    
-    
-    stage('Start') {
-      updateBuildStatusInProgress(gitCommit)
-    }
+    ansiColor('xterm') {
 
-    try
-    {
-      callback()
-    }
-    catch(Exception e) {
-      updateBuildStatusFailed(gitCommit)
-      throw e
-    }
-    finally {
+      stage('Clone') {
+        cleanWs()
+        checkout scm
+      }
+      
+      def gitCommit = getFullGitCommitHash()    
+      
+      stage('Start') {
+        updateBuildStatusInProgress(gitCommit)
+      }
+
+      try
+      {
+        callback()
+      }
+      catch(Exception e) {
+        updateBuildStatusFailed(gitCommit)
+        throw e
+      }
+      finally {
         if (xunitTestResultsPattern) {
-            xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
-            //archiveArtifacts artifacts: xunitTestResultsPattern, allowEmptyArchive : true
+          xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
         }
 
         if (cleanWsExcludePattern) {
-            cleanWs(deleteDirs: true, patterns: [[type: 'EXCLUDE', pattern: cleanWsExcludePattern]])
+          cleanWs(deleteDirs: true, patterns: [[type: 'EXCLUDE', pattern: cleanWsExcludePattern]])
         }
         else {
-            cleanWs()
-        }      
+          cleanWs()
+        }
+      }
+      stage('Finish') {
+        updateBuildStatusSuccessful(gitCommit)
+      }
     }
-    stage('Finish') {
-      updateBuildStatusSuccessful(gitCommit)
-    }    
   }
 }
 
@@ -88,58 +90,34 @@ def getFilesChangedInLastCommit(patterns) {
 def updateBuildStatusInProgress(gitCommitHash = null) {
     if (gitHubRepository)
     {
-        updateGitHubBuildStatusInProgress(gitCommitHash)
+        githubHelper.updateBuildStatusInProgress(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
     }
     if (bitbucketRepository)
     {
-        updateBitbucketBuildStatusInProgress(gitCommitHash)
+        bitbucketHelper.updateBuildStatusInProgress(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
     }
 }
 
 def updateBuildStatusSuccessful(gitCommitHash = null) {
     if (gitHubRepository)
     {
-        updateGitHubBuildStatusSuccessful(gitCommitHash)
+        githubHelper.updateBuildStatusSuccessful(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
     }
     if (bitbucketRepository)
     {
-        updateBitbucketBuildStatusSuccessful(gitCommitHash)
+        bitbucketHelper.updateBuildStatusSuccessful(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
     }
 }
 
 def updateBuildStatusFailed(gitCommitHash = null) {
     if (gitHubRepository)
     {
-        updateGitHubBuildStatusFailed(gitCommitHash)
+        githubHelper.updateBuildStatusFailed(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
     }
     if (bitbucketRepository)
     {
-        updateBitbucketBuildStatusFailed(gitCommitHash)
+        bitbucketHelper.updateBuildStatusFailed(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
     }
-}
-
-def updateBitbucketBuildStatusInProgress(gitCommitHash = null) {
-    bitbucketHelper.updateBuildStatusInProgress(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
-}
-
-def updateBitbucketBuildStatusSuccessful(gitCommitHash = null) {
-    bitbucketHelper.updateBuildStatusSuccessful(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
-}
-
-def updateBitbucketBuildStatusFailed(gitCommitHash = null) {
-    bitbucketHelper.updateBuildStatusFailed(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
-}
-
-def updateGitHubBuildStatusInProgress(gitCommitHash = null) {
-    githubHelper.updateBuildStatusInProgress(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
-}
-
-def updateGitHubBuildStatusSuccessful(gitCommitHash = null) {
-    githubHelper.updateBuildStatusSuccessful(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
-}
-
-def updateGitHubBuildStatusFailed(gitCommitHash = null) {
-    githubHelper.updateBuildStatusFailed(gitHubTokenCredentialsId, gitHubUsername, gitHubRepository, gitCommitHash);
 }
 
 def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
