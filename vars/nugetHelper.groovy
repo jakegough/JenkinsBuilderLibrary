@@ -26,14 +26,15 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
 }
 
 def getNupkgFiles(nupkgDir) {
-    
+
     nupkgFiles = sh(returnStdout: true, script: "ls -1 $nupkgDir/*.nupkg | grep -v symbols").toString().split("\n");
 
     for (i in 0 ..< nupkgFiles.size()) {
         nupkgFiles[i] = nupkgFiles[i].trim()
     }
 
-    nupkgFiles.removeAll(["", null])
+    nupkgFiles.removeAll("")
+    nupkgFiles.removeAll(null)
     
     return nupkgFiles
 }
