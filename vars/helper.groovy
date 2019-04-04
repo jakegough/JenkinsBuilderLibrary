@@ -42,8 +42,11 @@ def run(nodeLabel, callback) {
       }
       finally {
         if (xunitTestResultsPattern) {
-          // requires xunit plugin: https://plugins.jenkins.io/xunit
-          xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
+          try {
+            // requires xunit plugin: https://plugins.jenkins.io/xunit
+            xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
+          }
+          catch { }
         }
 
         if (cleanWsExcludePattern) {
