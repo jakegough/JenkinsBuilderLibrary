@@ -35,7 +35,7 @@ def getNupkgFiles(nupkgDir) {
         nupkgFiles[i] = nupkgFiles[i].trim()
     }
 
-    nupkgFiles = nupkgFiles.findAll({ item -> item != null && item.notEmpty() })
+    nupkgFiles = nupkgFiles.findAll({ item -> !(item) }) // null and empty evaluate to false
 
     return nupkgFiles
 }
