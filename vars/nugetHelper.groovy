@@ -14,11 +14,18 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
             // --no-symbols
             // def symbolsFile = sh(returnStdout: true, script: "ls -1 $nupkgDir/*.nupkg | grep symbols").toString().trim();
 
-            def nupkgFile = sh(returnStdout: true, script: "ls -1 $nupkgDir/*.nupkg | grep -v symbols").toString().trim();
+            def nupkgFiles = getNupkgFiles(nupkgDir)
 
-            sh """
-                dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key'
-            """
+            for(nupkgFile in nupkgFiles){
+                sh """
+                    dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key'
+                """
+            }
         }
     }
+}
+
+def getNupkgFiles(nupkgDir) {
+    nupkgFiles = sh(returnStdout: true, script: "ls -1 $nupkgDir/*.nupkg | grep -v symbols").toString().split("\n");
+    nupkgFiles*.trim()
 }
