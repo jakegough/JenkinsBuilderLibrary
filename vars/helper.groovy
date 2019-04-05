@@ -16,7 +16,7 @@ import groovy.transform.Field
 @Field cleanWsExcludePattern = null;
 @Field xunitTestResultsPattern = null;
 
-def run(nodeLabel, callback, cleanup = null) {
+def run(nodeLabel, callback, cleanup = null, environment = []) {
   node(nodeLabel) {
     // requires ansiColor plugin: https://wiki.jenkins.io/display/JENKINS/AnsiColor+Plugin
     ansiColor('xterm') {
@@ -34,14 +34,16 @@ def run(nodeLabel, callback, cleanup = null) {
 
       try
       {
-        try {
-          callback()
-        }
-        finally {
-          if (cleanup != null) {
-            cleanup()
+        withEnv(environment) {
+          try {
+            callback()
           }
-        }        
+          finally {
+            if (cleanup != null) {
+              cleanup()
+            }
+          }
+        }
       }
       catch(Exception e) {
         updateBuildStatusFailed(gitCommit)
