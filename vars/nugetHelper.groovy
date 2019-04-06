@@ -24,10 +24,8 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
         }
     }
     catch(Exception e)  {
-        throw e;
-    }
-    finally {
         error("NuGet push failed. NuGet package version must be greater than the latest published package of the same major version.")
+        throw e;
     }
     
     try {
@@ -49,10 +47,8 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
         }   
     }
     catch(Exception e)  {
-        throw e;
-    }
-    finally {
         error("NuGet push failed.")
+        throw e;
     }
 }
 

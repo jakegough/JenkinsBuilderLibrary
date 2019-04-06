@@ -25,10 +25,8 @@ def pushImage(image) {
         sh "docker push $image"
     }
     catch(Exception e)  {
-        throw e;
-    }
-    finally {
         error("Docker push failed.")
+        throw e;
     }
 }
 
