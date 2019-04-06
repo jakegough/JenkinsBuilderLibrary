@@ -4,8 +4,10 @@ import groovy.transform.Field
 
 def withKubectl(kubeConfigFileCredentialsId, kubectlVersion, callback) {
     kubectlVersionOrDefault = kubectlVersion ?: "latest";
+    kubectlImageTag = "$kubectlDockerImage:$kubectlVersionOrDefault"
 
-    docker.image("$kubectlDockerImage:$kubectlVersionOrDefault").inside('--entrypoint ""') {
+    docker.image(kubectlImageTag).pull()
+    docker.image(kubectlImageTag).inside('--entrypoint ""') {
         withCredentials([file(credentialsId: kubeConfigFileCredentialsId, variable: 'KUBECONFIG')]) {
             callback()
         }

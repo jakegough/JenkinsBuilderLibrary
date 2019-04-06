@@ -1,20 +1,35 @@
 import groovy.transform.Field
 
-@Field nugetDockerImage="microsoft/dotnet:2.0-sdk";
+@Field nugetDockerImage="microsoft/dotnet:2.1-sdk"; // 2.1 is LTS
+@Field nugetCheckDockerImage="jakegough/jaytwo.nugetcheck";
 
 def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
 
     sourceUrlOrDefault = sourceUrl ?: "https://www.nuget.org/api/v2/package";
 
+    def nupkgFiles = getNupkgFiles(nupkgDir)
+
+    docker.image(nugetCheckDockerImage).pull()
+    docker.image(nugetCheckDockerImage).inside("--entrypoint=''") {
+        for(nupkgFile in nupkgFiles){
+            // -gte            lists versions greater than or equal to the version specified
+            // --same-major    lists versions only with the same major version as the version specified
+            // --opposite-day  fails when results are found
+
+            sh """
+                nugetcheck '$nupkgFile' -gte '$nupkgFile' --same-major --opposite-day
+            """
+        }
+    }
+
     withCredentials([string(credentialsId: credentialsId, variable: "nuget_api_key")]) {
-        docker.image(nugetDockerImage).inside("-u root") {
+        docker.image(nugetDockerImage).pull()
+        docker.image(nugetDockerImage).inside() {
             // TODO: maybe some day I'll care about symbols... see also
             // --symbol-source
             // --symbol-api-key
             // --no-symbols
             // def symbolsFile = sh(returnStdout: true, script: "ls -1 $nupkgDir/*.nupkg | grep symbols").toString().trim();
-
-            def nupkgFiles = getNupkgFiles(nupkgDir)
 
             for(nupkgFile in nupkgFiles){
                 sh """
