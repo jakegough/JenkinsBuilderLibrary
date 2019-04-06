@@ -86,6 +86,10 @@ def getFullGitCommitHash() {
     return gitHelper.getFullCommitHash();
 }
 
+def getSafeJobName() {
+    return env.JOB_NAME.replaceAll('[^A-Za-z0-9]', '_').toLowerCase();
+}
+
 def getFilesChangedInBranch(patterns) {
     return gitHelper.getFilesChangedInBranch(patterns);
 }
@@ -156,6 +160,24 @@ def pushDockerImage(image) {
 
 def removeDockerImage(image) {
     dockerHelper.removeImage(image);
+}
+
+def tagAndPushDockerImageBeta(timestamp = null, image = null, credentialsId = null, registry = null) {
+    timestampOrDefault = timestamp ?: getTimestamp();
+    imageOrDefault = image ?: dockerImageName;
+    registryOrDefault = registry ?: dockerRegistry;
+    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
+
+    dockerHelper.tagAndPushImageBeta(timestamp, imageOrDefault, credentialsIdOrDefault, registryOrDefault)
+}
+
+def tagAndPushDockerImageRelease(timestamp = null, image = null, credentialsId = null, registry = null) {
+    timestampOrDefault = timestamp ?: getTimestamp();
+    imageOrDefault = image ?: dockerImageName;
+    registryOrDefault = registry ?: dockerRegistry;
+    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
+
+    dockerHelper.tagAndPushImageRelease(timestampOrDefault, imageOrDefault, credentialsIdOrDefault, registryOrDefault)
 }
 
 def withKubectl(callback) {

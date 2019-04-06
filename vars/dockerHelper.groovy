@@ -37,3 +37,50 @@ def removeImage(image) {
 def removeContainer(contaimer) {
     sh "docker rm $contaimer || echo 'contaimer $contaimer not found'"
 }
+
+def tagAndPushImageBeta(timestamp, image, credentialsId, registry = null) {
+    dockerLogin(credentialsId, registry)
+
+    def dockerRegistryImage = getRegistryImageName(image, credentialsId, registry)                    
+
+    def registryTags = [ 
+        "${dockerRegistryImage}:beta", 
+        "${dockerRegistryImage}:beta-${timestamp}" 
+    ]
+
+    pushDockerFoo(dockerLocalTag, registryTags)
+}
+
+def tagAndPushImageRelease(timestamp, image, credentialsId, registry = null) {
+    dockerLogin(credentialsId, registry)
+
+    def dockerRegistryImage = getRegistryImageName(image, credentialsId, registry)                    
+
+    def registryTags = [ 
+        "${dockerRegistryImage}:latest", 
+        "${dockerRegistryImage}:${timestamp}" 
+    ]
+    
+    pushDockerFoo(dockerLocalTag, registryTags)
+}
+
+def pushFoo(localTag, registryTags) {    
+    for(registryTag in registryTags) {
+        tag(localTag, registryTag)
+    }
+
+    try {
+        for(registryTag in registryTags) {
+            pushImage(registryTag)
+        }
+    }
+    catch(Exception e)  {
+        error("Docker push failed.")
+        throw e;
+    }
+    finally {
+        for(registryTag in registryTags) {
+            removeImage(registryTag)
+        }
+    }
+}

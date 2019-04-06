@@ -12,7 +12,7 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
     try {
         docker.image(nugetCheckDockerImage).pull()
         docker.image(nugetCheckDockerImage).inside("--entrypoint=''") {
-            for(nupkgFile in nupkgFiles){
+            for(nupkgFile in nupkgFiles) {
                 // -gte            lists versions greater than or equal to the version specified
                 // --same-major    lists versions only with the same major version as the version specified
                 // --opposite-day  fails when results are found
