@@ -38,7 +38,7 @@ def removeContainer(contaimer) {
     sh "docker rm $contaimer || echo 'contaimer $contaimer not found'"
 }
 
-def tagAndPushImageBeta(timestamp, image, credentialsId, registry = null) {
+def tagAndPushImageBeta(dockerLocalTag, timestamp, image, credentialsId, registry = null) {
     login(credentialsId, registry)
 
     def dockerRegistryImage = getRegistryImageName(image, credentialsId, registry)                    
@@ -51,7 +51,7 @@ def tagAndPushImageBeta(timestamp, image, credentialsId, registry = null) {
     tagAndPushImage(dockerLocalTag, registryTags)
 }
 
-def tagAndPushImageRelease(timestamp, image, credentialsId, registry = null) {
+def tagAndPushImageRelease(dockerLocalTag, timestamp, image, credentialsId, registry = null) {
     login(credentialsId, registry)
 
     def dockerRegistryImage = getRegistryImageName(image, credentialsId, registry)                    

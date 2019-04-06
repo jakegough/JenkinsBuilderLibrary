@@ -162,22 +162,22 @@ def removeDockerImage(image) {
     dockerHelper.removeImage(image);
 }
 
-def tagAndPushDockerImageBeta(timestamp = null, image = null, credentialsId = null, registry = null) {
+def tagAndPushDockerImageBeta(dockerLocalTag, timestamp = null, image = null, credentialsId = null, registry = null) {
     timestampOrDefault = timestamp ?: getTimestamp();
     imageOrDefault = image ?: dockerImageName;
     registryOrDefault = registry ?: dockerRegistry;
     credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
 
-    dockerHelper.tagAndPushImageBeta(timestamp, imageOrDefault, credentialsIdOrDefault, registryOrDefault)
+    dockerHelper.tagAndPushImageBeta(dockerLocalTag, timestampOrDefault, imageOrDefault, credentialsIdOrDefault, registryOrDefault)
 }
 
-def tagAndPushDockerImageRelease(timestamp = null, image = null, credentialsId = null, registry = null) {
+def tagAndPushDockerImageRelease(dockerLocalTag, timestamp = null, image = null, credentialsId = null, registry = null) {
     timestampOrDefault = timestamp ?: getTimestamp();
     imageOrDefault = image ?: dockerImageName;
     registryOrDefault = registry ?: dockerRegistry;
     credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
 
-    dockerHelper.tagAndPushImageRelease(timestampOrDefault, imageOrDefault, credentialsIdOrDefault, registryOrDefault)
+    dockerHelper.tagAndPushImageRelease(dockerLocalTag, timestampOrDefault, imageOrDefault, credentialsIdOrDefault, registryOrDefault)
 }
 
 def withKubectl(callback) {
