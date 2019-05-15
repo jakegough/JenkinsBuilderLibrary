@@ -15,6 +15,9 @@ import groovy.transform.Field
 @Field kubectlVersion = null;
 @Field cleanWsExcludePattern = null;
 @Field xunitTestResultsPattern = null;
+@Field coberturaCoverageReport = null;
+@Field htmlCoverageReportDir = null;
+@Field htmlCoverageReportIndexFile = null;
 
 def run(nodeLabel, callback) {
   node(nodeLabel) {
@@ -45,6 +48,35 @@ def run(nodeLabel, callback) {
           try {
             // requires xunit plugin: https://plugins.jenkins.io/xunit
             xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
+          }
+          catch(Exception e) 
+          {
+          }
+        }
+
+        if (coberturaCoverageReport) {
+          try {
+            // requires xunit plugin: https://plugins.jenkins.io/cobertura
+            // see also: https://jenkins.io/doc/pipeline/steps/cobertura/
+            cobertura coberturaReportFile: coberturaCoverageReport
+          }
+          catch(Exception e) 
+          {
+          }
+        }
+
+        if (htmlCoverageReportDir) {
+          htmlCoverageReportIndexFileOrDefault = credentialsId ?: "index.htm";
+          try {
+            // requires xunit plugin: https://plugins.jenkins.io/cobertura
+            publishHTML target: [
+              allowMissing: true,
+              alwaysLinkToLastBuild: false,
+              keepAll: true,
+              reportDir: htmlCoverageReportDir,
+              reportFiles: htmlCoverageReportIndexFileOrDefault,
+              reportName: "Test Coverage"
+            ]
           }
           catch(Exception e) 
           {
