@@ -47,7 +47,7 @@ def run(nodeLabel, callback) {
         // TODO: look into post{...} and always{...} blocks
         if (xunitTestResultsPattern) {
           // requires plugin: https://plugins.jenkins.io/xunit
-          if(!this.respondsTo(pipeline, 'xunit')) {
+          if(!this.metaClass.respondsTo(pipeline, 'xunit')) {
             error("Missing plugin: 'xunit'")
           } 
           
@@ -62,7 +62,7 @@ def run(nodeLabel, callback) {
 
         if (coberturaCoverageReport) {
           // requires plugin: https://plugins.jenkins.io/cobertura
-          if(!this.respondsTo(pipeline, 'cobertura')) {
+          if(!this.metaClass.respondsTo(pipeline, 'cobertura')) {
             error("Missing plugin: 'cobertura'")
           } 
 
@@ -79,7 +79,7 @@ def run(nodeLabel, callback) {
           htmlCoverageReportIndexFileOrDefault = htmlCoverageReportIndexFile ?: "index.htm";
 
           // requires plugin: https://plugins.jenkins.io/htmlpublisher
-          if(!this.respondsTo(pipeline, 'publishHTML')) {
+          if(!this.metaClass.respondsTo(pipeline, 'publishHTML')) {
             error("Missing plugin: 'publishHTML'")
           } 
 
