@@ -44,6 +44,7 @@ def run(nodeLabel, callback) {
         throw e
       }
       finally {
+        // TODO: look into post{...} and always{...} blocks
         if (xunitTestResultsPattern) {
           try {
             // requires xunit plugin: https://plugins.jenkins.io/xunit
@@ -66,7 +67,7 @@ def run(nodeLabel, callback) {
         }
 
         if (htmlCoverageReportDir) {
-          htmlCoverageReportIndexFileOrDefault = credentialsId ?: "index.htm";
+          htmlCoverageReportIndexFileOrDefault = htmlCoverageReportIndexFile ?: "index.htm";
           try {
             // requires xunit plugin: https://plugins.jenkins.io/cobertura
             publishHTML target: [
