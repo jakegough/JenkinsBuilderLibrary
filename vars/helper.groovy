@@ -46,10 +46,8 @@ def run(nodeLabel, callback) {
       finally {
         // TODO: look into post{...} and always{...} blocks
         if (xunitTestResultsPattern) {
-          // requires plugin: https://plugins.jenkins.io/xunit
-          if(!this.metaClass.respondsTo(pipeline, 'xunit')) {
-            error("Missing plugin: 'xunit'")
-          } 
+          // requires plugin: https://plugins.jenkins.io/
+          verifyPluginExists("xunit")
           
           try {
             // see also: https://jenkins.io/doc/pipeline/steps/xunit/
@@ -62,9 +60,7 @@ def run(nodeLabel, callback) {
 
         if (coberturaCoverageReport) {
           // requires plugin: https://plugins.jenkins.io/cobertura
-          if(!this.metaClass.respondsTo(pipeline, 'cobertura')) {
-            error("Missing plugin: 'cobertura'")
-          } 
+          verifyPluginExists("cobertura")
 
           try {
             // see also: https://jenkins.io/doc/pipeline/steps/cobertura/
@@ -79,9 +75,7 @@ def run(nodeLabel, callback) {
           htmlCoverageReportIndexFileOrDefault = htmlCoverageReportIndexFile ?: "index.htm";
 
           // requires plugin: https://plugins.jenkins.io/htmlpublisher
-          if(!this.metaClass.respondsTo(pipeline, 'publishHTML')) {
-            error("Missing plugin: 'publishHTML'")
-          } 
+          verifyPluginExists("htmlpublisher")
 
           try {
             // see also: https://jenkins.io/doc/pipeline/steps/htmlpublisher/
@@ -238,4 +232,8 @@ def kubectlApply(path) {
 
 def kubectlApplyDryRun(path) {
     kubernetesHelper.kubectlApplyDryRun(kubectlKubeConfigFileCredentialsId, kubectlVersion, path);
+}
+
+def verifyPluginExists(pluginId) {
+    pluginHelper.verifyPluginExists(pluginId);
 }
