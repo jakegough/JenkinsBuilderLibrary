@@ -1,6 +1,6 @@
 def pluginExists(pluginId) {
-    plugins = jenkins.model.Jenkins.instance.getPluginManager().getPlugins()
-    matchingPluginCount = plugins.filter({ x -> x.getShortName() == pluginId }).count()
+    def plugins = jenkins.model.Jenkins.instance.getPluginManager().getPlugins()
+    def matchingPluginCount = plugins.filter({ x -> x.getShortName() == pluginId }).count()
     return matchingPluginCount > 0
 }
 

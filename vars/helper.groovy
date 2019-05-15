@@ -237,3 +237,7 @@ def kubectlApplyDryRun(path) {
 def verifyPluginExists(pluginId) {
     pluginHelper.verifyPluginExists(pluginId);
 }
+
+def pluginExists(pluginId) {
+    return pluginHelper.pluginExists(pluginId);
+}
