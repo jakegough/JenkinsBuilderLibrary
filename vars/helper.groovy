@@ -46,8 +46,13 @@ def run(nodeLabel, callback) {
       finally {
         // TODO: look into post{...} and always{...} blocks
         if (xunitTestResultsPattern) {
+          // requires plugin: https://plugins.jenkins.io/xunit
+          if(!this.respondsTo(pipeline, 'xunit')) {
+            error("Missing plugin: 'xunit'")
+          } 
+          
           try {
-            // requires xunit plugin: https://plugins.jenkins.io/xunit
+            // see also: https://jenkins.io/doc/pipeline/steps/xunit/
             xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
           }
           catch(Exception e) 
@@ -56,8 +61,12 @@ def run(nodeLabel, callback) {
         }
 
         if (coberturaCoverageReport) {
+          // requires plugin: https://plugins.jenkins.io/cobertura
+          if(!this.respondsTo(pipeline, 'cobertura')) {
+            error("Missing plugin: 'cobertura'")
+          } 
+
           try {
-            // requires xunit plugin: https://plugins.jenkins.io/cobertura
             // see also: https://jenkins.io/doc/pipeline/steps/cobertura/
             cobertura coberturaReportFile: coberturaCoverageReport
           }
@@ -68,8 +77,14 @@ def run(nodeLabel, callback) {
 
         if (htmlCoverageReportDir) {
           htmlCoverageReportIndexFileOrDefault = htmlCoverageReportIndexFile ?: "index.htm";
+
+          // requires plugin: https://plugins.jenkins.io/htmlpublisher
+          if(!this.respondsTo(pipeline, 'publishHTML')) {
+            error("Missing plugin: 'publishHTML'")
+          } 
+
           try {
-            // requires xunit plugin: https://plugins.jenkins.io/cobertura
+            // see also: https://jenkins.io/doc/pipeline/steps/htmlpublisher/
             publishHTML target: [
               allowMissing: true,
               alwaysLinkToLastBuild: false,
