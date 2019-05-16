@@ -9,6 +9,9 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
 
     def nupkgFiles = getNupkgFiles(nupkgDir)
 
+    // requires plugin: https://plugins.jenkins.io/docker-plugin
+    pluginHelper.verifyPluginExists('docker-plugin')
+
     try {
         docker.image(nugetCheckDockerImage).pull()
         docker.image(nugetCheckDockerImage).inside("--entrypoint=''") {
