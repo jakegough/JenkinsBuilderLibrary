@@ -1,11 +1,9 @@
 def pluginExists(pluginId) {
-    jenkins.model.Jenkins.instance.getPluginManager().getPlugins().each{ plugin -> 
-        if (plugin.getInfo().sourceId == pluginId) {
-            return true
-        }
+    def allPlugins = jenkins.model.Jenkins.instance.getPluginManager().getPlugins()
+    
+    return allPlugins.find { plugin ->  
+        plugin.getShortName() == pluginId 
     }
-
-    return false
 }
 
 def verifyPluginExists(pluginId) {
