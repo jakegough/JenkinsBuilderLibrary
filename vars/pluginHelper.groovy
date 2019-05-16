@@ -1,9 +1,7 @@
 def pluginExists(pluginId) {
     def allPlugins = jenkins.model.Jenkins.instance.getPluginManager().getPlugins()
-    
-    return allPlugins.find { plugin ->  
-        plugin.getShortName() == pluginId 
-    }
+    def matchingPlugin = allPlugins.find { plugin ->  plugin.getShortName() == pluginId }
+    return matchingPlugin != null
 }
 
 def verifyPluginExists(pluginId) {
