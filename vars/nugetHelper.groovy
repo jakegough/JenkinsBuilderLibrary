@@ -3,11 +3,13 @@ import groovy.transform.Field
 @Field nugetDockerImage="microsoft/dotnet:2.1-sdk"; // 2.1 is LTS
 @Field nugetCheckDockerImage="jakegough/jaytwo.nugetcheck:20190406015844"; // known version with known syntax
 
-def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
+def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = null) {
 
     sourceUrlOrDefault = sourceUrl ?: "https://www.nuget.org/api/v2/package";
+    symbolSourceUrlOrDefault = symbolSourceUrl ?: "https://www.nuget.org/api/v2/symbol";
 
     def nupkgFiles = getNupkgFiles(nupkgDir)
+    def snupkgFiles = getSnupkgFiles(nupkgDir)
 
     // requires plugin: https://plugins.jenkins.io/docker-plugin
     pluginHelper.verifyPluginExists('docker-plugin')
@@ -40,6 +42,12 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
                         dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key'
                     """
                 }
+
+                for(snupkgFile in snupkgFiles){
+                    sh """
+                        dotnet nuget push '$snupkgFile' --source '$symbolSourceUrlOrDefault' --api-key '$nuget_api_key'
+                    """
+                }
             }
         }   
     }
@@ -50,8 +58,16 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
 }
 
 def getNupkgFiles(nupkgDir) {
+    return getSnupkgFiles(nupkgDir, "nupkg")
+}
+
+def getSnupkgFiles(nupkgDir) {
+    return getSnupkgFiles(nupkgDir, "snupkg")
+}
+
+def getSnupkgFiles(nupkgDir, extension) {
     // symbol packages (.snupkg) can be pushed just like regular packages
-    script = "ls -1 $nupkgDir/*.nupkg $nupkgDir/*.snupkg | grep -v symbols"
+    script = "ls -1 $nupkgDir/*.$extension | grep -v symbols"
     stdout = sh(returnStdout: true, script: script).toString()
     nupkgFiles = stdout.split("\n")
 
