@@ -5,8 +5,7 @@ import groovy.transform.Field
 
 def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = null) {
 
-    sourceUrlOrDefault = sourceUrl ?: "https://www.nuget.org/api/v2/package";
-    symbolSourceUrlOrDefault = symbolSourceUrl ?: "https://www.nuget.org/api/v2/symbol";
+    sourceUrlOrDefault = sourceUrl ?: "https://api.nuget.org/v3/index.json";
 
     def nupkgFiles = getNupkgFiles(nupkgDir)
 
@@ -38,7 +37,7 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
             docker.image(nugetDockerImage).inside() {
                 for(nupkgFile in nupkgFiles){
                     sh """
-                        dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key' --symbol-source '$symbolSourceUrlOrDefault' --symbol-api-key '$nuget_api_key'
+                        dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key'
                     """
                 }
             }
@@ -52,7 +51,7 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
 
 def getNupkgFiles(nupkgDir) {
     // symbol packages (.snupkg) are automatically pushed when in the same folder as their corresponding nupkg
-    script = "ls -1 $nupkgDir/*.nupkg $nupkgDir/*.snupkg | grep -v symbols"
+    script = "ls -1 $nupkgDir/*.nupkg | grep -v symbols"
     stdout = sh(returnStdout: true, script: script).toString()
     nupkgFiles = stdout.split("\n")
 
