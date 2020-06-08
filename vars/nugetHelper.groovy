@@ -9,7 +9,6 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
     symbolSourceUrlOrDefault = symbolSourceUrl ?: "https://www.nuget.org/api/v2/symbol";
 
     def nupkgFiles = getNupkgFiles(nupkgDir)
-    def snupkgFiles = getSnupkgFiles(nupkgDir)
 
     // requires plugin: https://plugins.jenkins.io/docker-plugin
     pluginHelper.verifyPluginExists('docker-plugin')
@@ -39,12 +38,7 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
             docker.image(nugetDockerImage).inside() {
                 for(nupkgFile in nupkgFiles){
                     sh """
-                        dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key'
-                    """
-                }
-                for(snupkgFile in snupkgFiles){
-                    sh """
-                        dotnet nuget push '$snupkgFile' --symbol-source '$symbolSourceUrlOrDefault' --api-key '$nuget_api_key'
+                        dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --symbol-source '$symbolSourceUrlOrDefault' --api-key '$nuget_api_key'
                     """
                 }
             }
@@ -57,16 +51,8 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
 }
 
 def getNupkgFiles(nupkgDir) {
-    return getSnupkgFiles(nupkgDir, "nupkg")
-}
-
-def getSnupkgFiles(nupkgDir) {
-    return getSnupkgFiles(nupkgDir, "snupkg")
-}
-
-def getSnupkgFiles(nupkgDir, extension) {
-    // symbol packages (.snupkg) can be pushed just like regular packages
-    script = "ls -1 $nupkgDir/*.$extension | grep -v symbols"
+    // symbol packages (.snupkg) are automatically pushed when in the same folder as their corresponding nupkg
+    script = "ls -1 $nupkgDir/*.nupkg | grep -v symbols"
     stdout = sh(returnStdout: true, script: script).toString()
     nupkgFiles = stdout.split("\n")
 
