@@ -35,12 +35,6 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
         withCredentials([string(credentialsId: credentialsId, variable: "nuget_api_key")]) {
             docker.image(nugetDockerImage).pull()
             docker.image(nugetDockerImage).inside() {
-                // TODO: maybe some day I'll care about symbols... see also
-                // --symbol-source
-                // --symbol-api-key
-                // --no-symbols
-                // def symbolsFile = sh(returnStdout: true, script: "ls -1 $nupkgDir/*.nupkg | grep symbols").toString().trim();
-
                 for(nupkgFile in nupkgFiles){
                     sh """
                         dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key'
@@ -56,8 +50,8 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null) {
 }
 
 def getNupkgFiles(nupkgDir) {
-
-    script = "ls -1 $nupkgDir/*.nupkg | grep -v symbols"
+    // symbol packages (.snupkg) can be pushed just like regular packages
+    script = "ls -1 $nupkgDir/*.nupkg $nupkgDir/*.snupkg | grep -v symbols"
     stdout = sh(returnStdout: true, script: script).toString()
     nupkgFiles = stdout.split("\n")
 
