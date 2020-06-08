@@ -38,7 +38,7 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
             docker.image(nugetDockerImage).inside() {
                 for(nupkgFile in nupkgFiles){
                     sh """
-                        dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --symbol-source '$symbolSourceUrlOrDefault' --api-key '$nuget_api_key'
+                        dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key' --symbol-source '$symbolSourceUrlOrDefault' --symbol-api-key '$nuget_api_key'
                     """
                 }
             }
