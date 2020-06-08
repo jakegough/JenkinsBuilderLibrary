@@ -52,7 +52,7 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
 
 def getNupkgFiles(nupkgDir) {
     // symbol packages (.snupkg) are automatically pushed when in the same folder as their corresponding nupkg
-    script = "ls -1 $nupkgDir/*.nupkg | grep -v symbols"
+    script = "ls -1 $nupkgDir/*.nupkg $nupkgDir/*.snupkg | grep -v symbols"
     stdout = sh(returnStdout: true, script: script).toString()
     nupkgFiles = stdout.split("\n")
 
