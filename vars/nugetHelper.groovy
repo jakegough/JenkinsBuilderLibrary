@@ -1,6 +1,6 @@
 import groovy.transform.Field
 
-@Field nugetDockerImage="microsoft/dotnet:2.1-sdk"; // 2.1 is LTS
+@Field nugetDockerImage="mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet-sdk"; // 3.1 is LTS
 @Field nugetCheckDockerImage="jakegough/jaytwo.nugetcheck:20190406015844"; // known version with known syntax
 
 def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = null) {
@@ -42,10 +42,9 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
                         dotnet nuget push '$nupkgFile' --source '$sourceUrlOrDefault' --api-key '$nuget_api_key'
                     """
                 }
-
                 for(snupkgFile in snupkgFiles){
                     sh """
-                        dotnet nuget push '$snupkgFile' --source '$symbolSourceUrlOrDefault' --api-key '$nuget_api_key'
+                        dotnet nuget push '$snupkgFile' --symbol-source '$symbolSourceUrlOrDefault' --api-key '$nuget_api_key'
                     """
                 }
             }
