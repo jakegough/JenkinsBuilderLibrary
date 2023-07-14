@@ -1,6 +1,6 @@
 import groovy.transform.Field
 
-@Field nugetDockerImage="microsoft/dotnet:2.1-sdk"; // 2.1 is LTS
+@Field nugetDockerImage="mcr.microsoft.com/dotnet/sdk:6.0"; // 6.0 is LTS
 @Field nugetCheckDockerImage="jakegough/jaytwo.nugetcheck:20190406015844"; // known version with known syntax
 
 def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = null) {
