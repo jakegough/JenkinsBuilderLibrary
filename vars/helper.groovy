@@ -59,12 +59,11 @@ def run(nodeLabel, callback) {
         }
 
         if (coberturaCoverageReport) {
-          // requires plugin: https://plugins.jenkins.io/cobertura
-          verifyPluginExists("cobertura")
+          // requires plugin: https://plugins.jenkins.io/coverage
+          verifyPluginExists("coverage")
 
           try {
-            // see also: https://jenkins.io/doc/pipeline/steps/cobertura/
-            cobertura coberturaReportFile: coberturaCoverageReport
+            recordCoverage tools: [cobertura(pattern: 'coberturaCoverageReport')]
           }
           catch(Exception e) 
           {
