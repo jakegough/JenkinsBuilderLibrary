@@ -28,7 +28,7 @@ def updateBuildStatus(tokenCredentialsId, username, repository, state, descripti
 
 	withCredentials([string(credentialsId: tokenCredentialsId, variable: 'TOKEN')]) {
 		def response = httpRequest \
-			customHeaders: [[name: 'Authorization', value: "Bearer $TOKEN"]], \
+			customHeaders: [[name: 'Authorization', value: "Bearer " + TOKEN]], \
 			contentType: 'APPLICATION_JSON', \
 			httpMode: 'POST', \
 			requestBody: bodyJson, \
