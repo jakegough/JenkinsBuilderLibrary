@@ -63,7 +63,7 @@ def run(nodeLabel, callback) {
           verifyPluginExists("coverage")
 
           try {
-            recordCoverage tools: [cobertura(pattern: 'coberturaCoverageReport')]
+            recordCoverage tools: [[parser: 'COBERTURA', pattern: 'coberturaCoverageReport']]
           }
           catch(Exception e) 
           {
