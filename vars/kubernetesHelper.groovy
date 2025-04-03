@@ -3,8 +3,8 @@ import groovy.transform.Field
 @Field kubectlDockerImage="lachlanevenson/k8s-kubectl";
 
 def withKubectl(kubeConfigFileCredentialsId, kubectlVersion, callback) {
-    kubectlVersionOrDefault = kubectlVersion ?: "latest";
-    kubectlImageTag = "$kubectlDockerImage:$kubectlVersionOrDefault"
+    def kubectlVersionOrDefault = kubectlVersion ?: "latest";
+    def kubectlImageTag = "$kubectlDockerImage:$kubectlVersionOrDefault"
 
     // requires plugin: https://plugins.jenkins.io/docker-plugin
     pluginHelper.verifyPluginExists('docker-plugin')

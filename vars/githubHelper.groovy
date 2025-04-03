@@ -14,12 +14,12 @@ def updateBuildStatusFailed(tokenCredentialsId, username, repository, gitCommitH
 
 def updateBuildStatus(tokenCredentialsId, username, repository, state, description, gitCommitHash = null) {
 
-    gitCommitHashOrDefault = gitCommitHash ?: git.getFullCommitHash();
+    def gitCommitHashOrDefault = gitCommitHash ?: git.getFullCommitHash();
     
     // a lot of help from: https://stackoverflow.com/questions/14274293/show-current-state-of-jenkins-build-on-github-repo
-    postToUrl = "https://api.github.com/repos/${username}/${repository}/statuses/${gitCommitHashOrDefault}"
+    def postToUrl = "https://api.github.com/repos/${username}/${repository}/statuses/${gitCommitHashOrDefault}"
 
-    bodyJson = \
+    def bodyJson = \
 """{ 
     "state": "${state}",
     "target_url": "${BUILD_URL}", 

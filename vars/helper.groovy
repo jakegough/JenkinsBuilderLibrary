@@ -174,15 +174,15 @@ def updateBuildStatusFailed(gitCommitHash = null) {
 }
 
 def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
-    credentialsIdOrDefault = credentialsId ?: nuGetCredentialsId;
-    sourceUrlOrDefault = sourceUrl ?: nuGetSourceUrl;
+    def credentialsIdOrDefault = credentialsId ?: nuGetCredentialsId;
+    def sourceUrlOrDefault = sourceUrl ?: nuGetSourceUrl;
     nugetHelper.pushPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
 }
 
 def getDockerRegistryImageName(image = null, registry = null, credentialsId = null) {
-    imageOrDefault = image ?: dockerImageName;
-    registryOrDefault = registry ?: dockerRegistry;
-    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;        
+    def imageOrDefault = image ?: dockerImageName;
+    def registryOrDefault = registry ?: dockerRegistry;
+    def credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;        
     return dockerHelper.getRegistryImageName(imageOrDefault, credentialsIdOrDefault, registryOrDefault)
 }
 
@@ -191,8 +191,8 @@ def tagDockerImage(sourceImage, targetImage) {
 }
 
 def dockerLogin(registry = null, credentialsId = null) {
-    registryOrDefault = registry ?: dockerRegistry;
-    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;    
+    def registryOrDefault = registry ?: dockerRegistry;
+    def credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;    
     dockerHelper.login(credentialsIdOrDefault, registryOrDefault);
 }
 
@@ -205,19 +205,19 @@ def removeDockerImage(image) {
 }
 
 def tagAndPushDockerImageBeta(dockerLocalTag, timestamp = null, image = null, credentialsId = null, registry = null) {
-    timestampOrDefault = timestamp ?: getTimestamp();
-    imageOrDefault = image ?: dockerImageName;
-    registryOrDefault = registry ?: dockerRegistry;
-    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
+    def timestampOrDefault = timestamp ?: getTimestamp();
+    def imageOrDefault = image ?: dockerImageName;
+    def registryOrDefault = registry ?: dockerRegistry;
+    def credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
 
     dockerHelper.tagAndPushImageBeta(dockerLocalTag, timestampOrDefault, imageOrDefault, credentialsIdOrDefault, registryOrDefault)
 }
 
 def tagAndPushDockerImageRelease(dockerLocalTag, timestamp = null, image = null, credentialsId = null, registry = null) {
-    timestampOrDefault = timestamp ?: getTimestamp();
-    imageOrDefault = image ?: dockerImageName;
-    registryOrDefault = registry ?: dockerRegistry;
-    credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
+    def timestampOrDefault = timestamp ?: getTimestamp();
+    def imageOrDefault = image ?: dockerImageName;
+    def registryOrDefault = registry ?: dockerRegistry;
+    def credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
 
     dockerHelper.tagAndPushImageRelease(dockerLocalTag, timestampOrDefault, imageOrDefault, credentialsIdOrDefault, registryOrDefault)
 }

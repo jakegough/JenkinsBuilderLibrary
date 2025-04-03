@@ -13,12 +13,12 @@ def updateBuildStatusFailed(userPassCredentialsId, username, repository, gitComm
 }
 
 def updateBuildStatus(userPassCredentialsId, username, repository, state, description, gitCommitHash = null) {
-    gitCommitHashOrDefault = gitCommitHash ?: git.getFullCommitHash();
+    def gitCommitHashOrDefault = gitCommitHash ?: git.getFullCommitHash();
     
     // a lot of help from: https://confluence.atlassian.com/bitbucket/integrate-your-build-system-with-bitbucket-cloud-790790968.html
-    postToUrl = "https://api.bitbucket.org/2.0/repositories/${username}/${repository}/commit/${gitCommitHashOrDefault}/statuses/build"
+    def postToUrl = "https://api.bitbucket.org/2.0/repositories/${username}/${repository}/commit/${gitCommitHashOrDefault}/statuses/build"
 
-    bodyJson = \
+    def bodyJson = \
 """{ 
     "state": "${state}", 
     "key": "${BUILD_ID}", 

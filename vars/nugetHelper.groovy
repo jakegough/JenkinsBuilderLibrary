@@ -5,7 +5,7 @@ import groovy.transform.Field
 
 def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = null) {
 
-    sourceUrlOrDefault = sourceUrl ?: "https://api.nuget.org/v3/index.json";
+    def sourceUrlOrDefault = sourceUrl ?: "https://api.nuget.org/v3/index.json";
 
     def nupkgFiles = getNupkgFiles(nupkgDir)
 
@@ -51,9 +51,9 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
 
 def getNupkgFiles(nupkgDir) {
     // symbol packages (.snupkg) are automatically pushed when in the same folder as their corresponding nupkg
-    script = "ls -1 $nupkgDir/*.nupkg | grep -v symbols"
-    stdout = sh(returnStdout: true, script: script).toString()
-    nupkgFiles = stdout.split("\n")
+    def script = "ls -1 $nupkgDir/*.nupkg | grep -v symbols"
+    def stdout = sh(returnStdout: true, script: script).toString()
+    def nupkgFiles = stdout.split("\n")
 
     for (i in 0 ..< nupkgFiles.size()) {
         nupkgFiles[i] = nupkgFiles[i].trim()
