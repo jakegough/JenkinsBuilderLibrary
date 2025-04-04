@@ -1,7 +1,6 @@
 import groovy.transform.Field
 
-@Field nugetDockerImage="mcr.microsoft.com/dotnet/sdk:6.0"; // 6.0 is LTS
-@Field nugetCheckDockerImage="jakegough/jaytwo.nugetcheck:20190406015844"; // known version with known syntax
+@Field nugetDockerImage="mcr.microsoft.com/dotnet/sdk:8.0"; // 8.0 is LTS
 
 def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = null) {
 
@@ -11,25 +10,6 @@ def pushPackage(nupkgDir, credentialsId, sourceUrl = null, symbolSourceUrl = nul
 
     // requires plugin: https://plugins.jenkins.io/docker-plugin
     pluginHelper.verifyPluginExists('docker-plugin')
-
-    try {
-        docker.image(nugetCheckDockerImage).pull()
-        docker.image(nugetCheckDockerImage).inside("--entrypoint=''") {
-            for(nupkgFile in nupkgFiles) {
-                // -gte            lists versions greater than or equal to the version specified
-                // --same-major    lists versions only with the same major version as the version specified
-                // --opposite-day  fails when results are found
-
-                sh """
-                    nugetcheck '$nupkgFile' -gte '$nupkgFile' --same-major --opposite-day
-                """
-            }
-        }
-    }
-    catch(Exception e)  {
-        error("NuGet push failed. NuGet package version must be greater than the latest published package of the same major version.")
-        throw e;
-    }
     
     try {
         withCredentials([string(credentialsId: credentialsId, variable: "nuget_api_key")]) {
