@@ -6,7 +6,6 @@ import groovy.transform.Field
 @Field bitbucketUsername = null;
 @Field bitbucketRepository = null;
 @Field bitbucketUserPassCredentialsId = "missing_bitbucketUserPassCredentialsId";
-@Field nuGetCredentialsId = "missing_nuGetCredentialsId";
 @Field dockerRegistryCredentialsId = "missing_dockerRegistryCredentialsId";
 @Field dockerRegistry = null;
 @Field dockerImageName = null;
