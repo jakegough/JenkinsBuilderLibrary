@@ -7,7 +7,6 @@ import groovy.transform.Field
 @Field bitbucketRepository = null;
 @Field bitbucketUserPassCredentialsId = "missing_bitbucketUserPassCredentialsId";
 @Field nuGetCredentialsId = "missing_nuGetCredentialsId";
-@Field nuGetSourceUrl = null;
 @Field dockerRegistryCredentialsId = "missing_dockerRegistryCredentialsId";
 @Field dockerRegistry = null;
 @Field dockerImageName = null;
@@ -71,7 +70,7 @@ def run(nodeLabel, callback) {
         }
 
         if (htmlCoverageReportDir) {
-          htmlCoverageReportIndexFileOrDefault = htmlCoverageReportIndexFile ?: "index.htm";
+          def htmlCoverageReportIndexFileOrDefault = htmlCoverageReportIndexFile ?: "index.htm";
 
           // requires plugin: https://plugins.jenkins.io/htmlpublisher
           verifyPluginExists("htmlpublisher")
@@ -170,12 +169,6 @@ def updateBuildStatusFailed(gitCommitHash = null) {
     {
         bitbucketHelper.updateBuildStatusFailed(bitbucketUserPassCredentialsId, bitbucketUsername, bitbucketRepository, gitCommitHash);
     }
-}
-
-def pushNugetPackage(nupkgDir, credentialsId = null, sourceUrl = null) {
-    def credentialsIdOrDefault = credentialsId ?: nuGetCredentialsId;
-    def sourceUrlOrDefault = sourceUrl ?: nuGetSourceUrl;
-    nugetHelper.pushPackage(nupkgDir, credentialsIdOrDefault, sourceUrlOrDefault);
 }
 
 def getDockerRegistryImageName(image = null, registry = null, credentialsId = null) {
