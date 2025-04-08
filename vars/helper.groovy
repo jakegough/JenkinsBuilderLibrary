@@ -16,6 +16,9 @@ import groovy.transform.Field
 @Field coberturaCoverageReport = null;
 @Field htmlCoverageReportDir = null;
 @Field htmlCoverageReportIndexFile = null;
+@Field ejsonCredentialsId = "missing_ejsonCredentialsId";
+@Field ejsonVariable = "missing_ejsonVariable";
+
 
 def run(nodeLabel, callback) {
   def isDeployBranch = branches.isDeploymentBranch()
@@ -111,6 +114,48 @@ def run(nodeLabel, callback) {
       }
     }
   }
+}
+
+def runDatabase() {
+    /*
+    * requires make targets:
+    * - clean
+    * - build
+    * - test
+    * - migrate-dev
+    * - migrate-prod
+    *
+    * also assumes the ejsonVariable is consistent with the secret configured in the docker-compose file
+    */
+
+    helper.run('linux && make && docker', {
+        try {
+            stage ('Build') {
+                sh "make clean build"
+            }
+            stage ('Test Migration') {
+                sh "make test"
+            }
+            if (branches.isDeploymentBranch()){
+                withCredentials([string(credentialsId: ejsonCredentialsId, variable: ejsonVariable)]) {
+                    if (branches.isDevelopBranch()){
+                        stage ('Migrate Dev') {
+                            sh "make migrate-dev"
+                        }
+                    }
+                    if (branches.isMasterBranch()){
+                        stage ('Migrate Prod') {
+                            sh "make migrate-prod"
+                        }
+                    }
+                }
+
+            }
+        }
+        finally {
+            sh "make clean"
+        }
+    })
 }
 
 def getTimestamp() {
