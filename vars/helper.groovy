@@ -128,7 +128,7 @@ def runDatabase() {
     * also assumes the ejsonVariable is consistent with the secret configured in the docker-compose file
     */
 
-    helper.run('linux && make && docker', {
+    run('linux && make && docker', {
         try {
             stage ('Build') {
                 sh "make clean build"
