@@ -192,8 +192,8 @@ def runNuGetProject() {
     def nuGetCredentialsId = 'nuget-org-jaytwo'
 
     run('linux && make && docker', {
-        def timestamp = helper.getTimestamp()
-        def safeJobName = helper.getSafeJobName()
+        def timestamp = getTimestamp()
+        def safeJobName = getSafeJobName()
         def dockerLocalTag = "jenkins__${safeJobName}__${timestamp}"
         def dockerBuilderTag = dockerLocalTag + "__builder"
 
