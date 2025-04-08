@@ -41,11 +41,11 @@ def removeContainer(contaimer) {
 def tagAndPushImageBeta(dockerLocalTag, timestamp, image, credentialsId, registry = null) {
     login(credentialsId, registry)
 
-    def dockerRegistryImage = getRegistryImageName(image, credentialsId, registry)                    
+    def dockerRegistryImage = getRegistryImageName(image, credentialsId, registry)
 
-    def registryTags = [ 
-        "${dockerRegistryImage}:beta", 
-        "${dockerRegistryImage}:beta-${timestamp}" 
+    def registryTags = [
+        "${dockerRegistryImage}:beta",
+        "${dockerRegistryImage}:beta-${timestamp}"
     ]
 
     tagAndPushImage(dockerLocalTag, registryTags)
@@ -54,17 +54,17 @@ def tagAndPushImageBeta(dockerLocalTag, timestamp, image, credentialsId, registr
 def tagAndPushImageRelease(dockerLocalTag, timestamp, image, credentialsId, registry = null) {
     login(credentialsId, registry)
 
-    def dockerRegistryImage = getRegistryImageName(image, credentialsId, registry)                    
+    def dockerRegistryImage = getRegistryImageName(image, credentialsId, registry)
 
-    def registryTags = [ 
-        "${dockerRegistryImage}:latest", 
-        "${dockerRegistryImage}:${timestamp}" 
+    def registryTags = [
+        "${dockerRegistryImage}:latest",
+        "${dockerRegistryImage}:${timestamp}"
     ]
-    
+
     tagAndPushImage(dockerLocalTag, registryTags)
 }
 
-def tagAndPushImage(localTag, registryTags) {    
+def tagAndPushImage(localTag, registryTags) {
     for(registryTag in registryTags) {
         tag(localTag, registryTag)
     }

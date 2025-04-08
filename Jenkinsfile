@@ -1,7 +1,7 @@
 library 'JenkinsBuilderLibrary'
 
 testWithNode('linux', {
-    assert helper.getTimestamp() != null     
+    assert helper.getTimestamp() != null
 
     assert helper.pluginExists('credentials') == true
     assert helper.pluginExists('fizzbuz123') == false
@@ -40,6 +40,6 @@ def testWithNode(nodeLabel, callback) {
     node(nodeLabel) {
         stage(nodeLabel) {
             callback()
-        }        
+        }
     }
 }

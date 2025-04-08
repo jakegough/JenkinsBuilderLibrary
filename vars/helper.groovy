@@ -41,9 +41,9 @@ def run(nodeLabel, callback) {
         cleanWs()
         checkout scm
       }
-      
-      def gitCommit = getFullGitCommitHash()    
-      
+
+      def gitCommit = getFullGitCommitHash()
+
       stage('Start') {
         updateBuildStatusInProgress(gitCommit)
       }
@@ -61,12 +61,12 @@ def run(nodeLabel, callback) {
         if (xunitTestResultsPattern) {
           // requires plugin: https://plugins.jenkins.io/
           verifyPluginExists("xunit")
-          
+
           try {
             // see also: https://jenkins.io/doc/pipeline/steps/xunit/
             xunit tools: [MSTest(pattern: xunitTestResultsPattern)]
           }
-          catch(Exception e) 
+          catch(Exception e)
           {
           }
         }
@@ -78,7 +78,7 @@ def run(nodeLabel, callback) {
           try {
             recordCoverage tools: [[parser: 'COBERTURA', pattern: coberturaCoverageReport]]
           }
-          catch(Exception e) 
+          catch(Exception e)
           {
           }
         }
@@ -100,7 +100,7 @@ def run(nodeLabel, callback) {
               reportName: "Test Coverage"
             ]
           }
-          catch(Exception e) 
+          catch(Exception e)
           {
           }
         }
@@ -188,7 +188,7 @@ def updateBuildStatusFailed(gitCommitHash = null) {
 def getDockerRegistryImageName(image = null, registry = null, credentialsId = null) {
     def imageOrDefault = image ?: dockerImageName;
     def registryOrDefault = registry ?: dockerRegistry;
-    def credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;        
+    def credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
     return dockerHelper.getRegistryImageName(imageOrDefault, credentialsIdOrDefault, registryOrDefault)
 }
 
@@ -198,7 +198,7 @@ def tagDockerImage(sourceImage, targetImage) {
 
 def dockerLogin(registry = null, credentialsId = null) {
     def registryOrDefault = registry ?: dockerRegistry;
-    def credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;    
+    def credentialsIdOrDefault = credentialsId ?: dockerRegistryCredentialsId;
     dockerHelper.login(credentialsIdOrDefault, registryOrDefault);
 }
 
