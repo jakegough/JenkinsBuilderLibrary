@@ -1,5 +1,5 @@
 isMasterBranch() {
-    return env.BRANCH_NAME == 'master'
+    return env.BRANCH_NAME == 'master' \
         || env.BRANCH_NAME == 'main'
 }
 
@@ -8,12 +8,12 @@ isDevelopBranch() {
 }
 
 isReleaseBranch() {
-    env.BRANCH_NAME == 'release'
+    env.BRANCH_NAME == 'release' \
         || env.BRANCH_NAME.startsWith('release/')
 }
 
 isDeploymentBranch() {
-    return isMasterBranch()
-        || isDevelopBranch()
+    return isMasterBranch() \
+        || isDevelopBranch() \
         || isReleaseBranch()
 }
