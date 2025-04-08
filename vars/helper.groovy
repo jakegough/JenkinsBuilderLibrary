@@ -116,6 +116,14 @@ def run(nodeLabel, callback) {
   }
 }
 
+def loadDbProjectDefaults(gitHubRepository) {
+    gitHubUsername = 'jakegough-jaytwo'
+    gitHubRepository = gitHubRepository
+    gitHubTokenCredentialsId = 'github-jakegough-jaytwo-token'
+    ejsonCredentialsId = 'ejson-f301f9'
+    ejsonVariable = 'ejson_f301f9'
+}
+
 def runDatabase() {
     /*
     * requires make targets:
@@ -149,7 +157,6 @@ def runDatabase() {
                         }
                     }
                 }
-
             }
         }
         finally {
