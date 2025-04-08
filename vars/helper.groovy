@@ -18,6 +18,21 @@ import groovy.transform.Field
 @Field htmlCoverageReportIndexFile = null;
 
 def run(nodeLabel, callback) {
+  def isDeployBranch = (
+    env.BRANCH_NAME == 'master' ||
+    env.BRANCH_NAME == 'main' ||
+    env.BRANCH_NAME == 'release' ||
+    env.BRANCH_NAME == 'develop' ||
+    env.BRANCH_NAME.startsWith('release/')
+  )
+  // taken from https://www.jvt.me/posts/2020/02/23/jenkins-multibranch-skip-branch-index/
+  def isBranchIndexingBuild = currentBuild.getBuildCauses().toString().contains('BranchIndexingCause')
+  if (isBranchIndexingBuild && isDeployBranch) {
+    print "INFO: Build skipped due to trigger being Branch Indexing"
+    currentBuild.result = 'ABORTED'
+    return
+  }
+
   node(nodeLabel) {
     // requires ansiColor plugin: https://wiki.jenkins.io/display/JENKINS/AnsiColor+Plugin
     ansiColor('xterm') {
