@@ -165,7 +165,7 @@ def runDatabase() {
     })
 }
 
-loadNuGetProjectDefaults(gitHubRepository) {
+def loadNuGetProjectDefaults(gitHubRepository) {
     gitHubUsername = 'jakegough-jaytwo'
     gitHubRepository = gitHubRepository
     gitHubTokenCredentialsId = 'github-jakegough-jaytwo-token'
@@ -174,7 +174,7 @@ loadNuGetProjectDefaults(gitHubRepository) {
     htmlCoverageReportDir = 'out/coverage/html';
 }
 
-runNuGetProject() {
+def runNuGetProject() {
     /*
     * requires make targets:
     * - docker-builder
