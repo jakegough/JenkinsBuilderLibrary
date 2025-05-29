@@ -2,7 +2,7 @@ def build(Map args = [:]) {
 
     def gitHubUsername = args.get('gitHubUsername', 'jakegough-homelab');
     def gitHubRepository = args.get('gitHubRepository', 'missing_gitHubRepository');
-    def gitHubTokenCredentialsId = args.get('gitHubTokenCredentialsId', 'github-jakegough-jaytwo-token');
+    def gitHubTokenCredentialsId = args.get('gitHubTokenCredentialsId', 'github-jakegough-homelab-token');
     def dockerRegistryCredentialsId = args.get('dockerRegistryCredentialsId', 'homelab-docker-container-registry');
     def dockerRegistry = args.get('dockerRegistry', 'container-registry.homelab.jaytwo.com');
     def dockerImageName = args.get('dockerImageName', 'missing_dockerImageName');
