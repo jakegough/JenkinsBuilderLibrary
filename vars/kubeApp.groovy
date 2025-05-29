@@ -39,7 +39,7 @@ def build(Map args = [:]) {
                     stage ('Push Image') {
                         dockerHelper.login(dockerRegistryCredentialsId, dockerRegistry)
 
-                        def devTag = "$dockerImageName:latest-dev";
+                        def devTag = "$dockerRegistry/$dockerImageName:latest-dev";
                         dockerHelper.tag(dockerLocalTag, devTag)
                         dockerHelper.pushImage(devTag)
                         dockerHelper.removeImage(devTag)
@@ -59,7 +59,7 @@ def build(Map args = [:]) {
 
                     if (prodNamespace && branches.isMasterBranch()) {
                         stage ('Deploy Prod') {
-                            def prodTag = "$dockerImageName:latest-prod";
+                            def prodTag = "$dockerRegistry/$dockerImageName:latest-prod";
                             dockerHelper.tag(dockerLocalTag, prodTag)
                             dockerHelper.pushImage(prodTag)
                             dockerHelper.removeImage(prodTag)
