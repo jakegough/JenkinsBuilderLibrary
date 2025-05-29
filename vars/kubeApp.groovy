@@ -30,10 +30,10 @@ def build(Map args = [:]) {
                         sh """
                             mkdir -p /opt/ejson/keys
                             echo \"\$EJK\" > /opt/ejson/keys/${ejsonPublicKey}
+                            cat /opt/ejson/keys/${ejsonPublicKey}
                         """
 
                         stage ('Unit Tests') {
-                            sh "echo "
                             sh "make unit-test"
                         }
 
