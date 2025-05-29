@@ -11,7 +11,6 @@ def build(Map args = [:]) {
     def prodCluster = args.get('prodCluster', 'k3s-general');
     def prodNamespace = args.get('prodNamespace', '');
     def ejsonCredentialsId = args.get('ejsonCredentialsId', 'missing_ejsonCredentialsId');
-    def ejsonPublicKey = args.get('ejsonPublicKey', 'missing_ejsonPublicKey');
 
     helper.run('linux && make && docker', {
         def timestamp = helper.getTimestamp()
@@ -25,52 +24,55 @@ def build(Map args = [:]) {
                     sh "make docker"
                 }
 
-                withCredentials([string(credentialsId: ejsonCredentialsId, variable: "EJK_" + ejsonPublicKey)]) {
+                withEjson(ejsonCredentialsId) {
                     docker.image(dockerBuilderTag).inside() {
                         stage ('Unit Tests') {
                             sh "make unit-test"
                         }
 
-                        stage ('Integration Tests') { }
+                        stage ('Integration Tests') {
+                            sh "make integration-test"
+                        }
                     }
                 }
 
                 if (branches.isDeploymentBranch()) {
                     stage ('Push Image') {
                         dockerHelper.login(dockerRegistryCredentialsId, dockerRegistry)
-
-                        def devTag = "$dockerRegistry/$dockerImageName:latest-dev";
-                        dockerHelper.tag(dockerLocalTag, devTag)
-                        dockerHelper.pushImage(devTag)
-                        dockerHelper.removeImage(devTag)
+                        dockerTagAndPush(dockerLocalTag, "$dockerRegistry/$dockerImageName:latest-dev")
                     }
 
-                    if (devNamespace && branches.isDevelopBranch()) {
+                    if (branches.isDevelopBranch() && devNamespace) {
                         stage ('Deploy Dev') {
-                            kubectl.inside(devCluster) {
-                                sh """
-                                    kubectl rollout restart deployment/app -n $devNamespace
-                                    kubectl rollout status deployment/app -n $devNamespace --timeout=5m
-                                """}
+                            kubectlRolloutRestart(devCluster, devNamespace);
+                        }
+
+                        stage ('Integration Tests') {
+                            withEjson(ejsonCredentialsId) {
+                                docker.image(dockerBuilderTag).inside() {
+                                    sh "make integration-test TEST_ENV=Production"
+                                }
+                            }
                         }
                     }
 
-                    stage ('Integration Tests') { }
-
-                    if (prodNamespace && branches.isMasterBranch()) {
-                        stage ('Deploy Prod') {
-                            def prodTag = "$dockerRegistry/$dockerImageName:latest-prod";
-                            dockerHelper.tag(dockerLocalTag, prodTag)
-                            dockerHelper.pushImage(prodTag)
-                            dockerHelper.removeImage(prodTag)
-
-                            kubectl.inside(prodCluster) {
-                                sh """
-                                    kubectl rollout restart deployment/app -n $prodNamespace
-                                    kubectl rollout status deployment/app -n $prodNamespace --timeout=5m
-                                """}
+                    if (branches.isMasterBranch() && prodNamespace) {
+                        stage ('Promote Image') {
+                            dockerHelper.login(dockerRegistryCredentialsId, dockerRegistry)
+                            dockerTagAndPush(dockerLocalTag, "$dockerRegistry/$dockerImageName:latest-prod")
                         }
-                        stage ('Integration Tests') { }
+
+                        stage ('Deploy Prod') {
+                            kubectlRolloutRestart(prodCluster, prodNamespace);
+                        }
+
+                        stage ('Integration Tests') {
+                            withEjson(ejsonCredentialsId) {
+                                docker.image(dockerBuilderTag).inside() {
+                                    sh "make integration-test TEST_ENV=Production"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -81,4 +83,18 @@ def build(Map args = [:]) {
             }
         }
     })
+}
+
+def dockerTagAndPush(String localTag, String remoteTag) {
+    dockerHelper.tag(localTag, remoteTag)
+    dockerHelper.pushImage(remoteTag)
+    dockerHelper.removeImage(remoteTag)
+}
+
+def kubectlRolloutRestart(String clusterId, String namespace) {
+    kubectl.inside(clusterId) {
+        sh """
+            kubectl rollout restart deployment/app -n $namespace
+            kubectl rollout status deployment/app -n $namespace --timeout=5m
+        """}
 }
