@@ -10,6 +10,8 @@ def build(Map args = [:]) {
     def devNamespace = args.get('devNamespace', '');
     def prodCluster = args.get('prodCluster', 'k3s-general');
     def prodNamespace = args.get('prodNamespace', '');
+    def ejsonCredentialsId = args.get('ejsonCredentialsId', 'missing_ejsonCredentialsId');
+    def ejsonPublicKey = args.get('ejsonPublicKey', 'missing_ejsonPublicKey');
 
     helper.run('linux && make && docker', {
         def timestamp = helper.getTimestamp()
@@ -24,11 +26,17 @@ def build(Map args = [:]) {
                 }
 
                 docker.image(dockerBuilderTag).inside() {
-                    stage ('Unit Tests') {
-                        sh "make unit-test"
-                    }
+                    withCredentials([string(credentialsId: ejsonCredentialsId, variable: "EJK")]) {
+                        sh "echo \"\$EJK\" > /opt/ejson/keys/${ejsonPublicKey}"
 
-                    stage ('Integration Tests') { }
+                        stage ('Unit Tests') {
+                            sh "echo "
+                            sh "make unit-test"
+                        }
+
+                        stage ('Integration Tests') {
+                        }
+                    }
                 }
 
                 if (branches.isDeploymentBranch()) {
