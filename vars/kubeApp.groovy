@@ -25,21 +25,13 @@ def build(Map args = [:]) {
                     sh "make docker-builder"
                 }
 
-                docker.image(dockerBuilderTag).inside() {
-                    withCredentials([string(credentialsId: ejsonCredentialsId, variable: "EJK")]) {
-                        sh """
-                            mkdir -p /opt/ejson/keys
-                            echo \"\$EJK\" > /opt/ejson/keys/${ejsonPublicKey}
-                        """
-                    }
+                withCredentials([string(credentialsId: ejsonCredentialsId, variable: "EJK_" + ejsonPublicKey)]) {
+                    docker.image(dockerBuilderTag).inside() {
+                        stage ('Unit Tests') {
+                            sh "make unit-test"
+                        }
 
-                    sh "cat /opt/ejson/keys/${ejsonPublicKey}"
-
-                    stage ('Unit Tests') {
-                        sh "make unit-test"
-                    }
-
-                    stage ('Integration Tests') {
+                        stage ('Integration Tests') { }
                     }
                 }
 
@@ -53,7 +45,7 @@ def build(Map args = [:]) {
                         dockerHelper.removeImage(devTag)
                     }
 
-                    if (devCluster && branches.isDevelopBranch()) {
+                    if (devNamespace && branches.isDevelopBranch()) {
                         stage ('Deploy Dev') {
                             kubectl.inside(devCluster) {
                                 sh """
@@ -65,9 +57,9 @@ def build(Map args = [:]) {
 
                     stage ('Integration Tests') { }
 
-                    if (prodCluster && branches.isMasterBranch()) {
+                    if (prodNamespace && branches.isMasterBranch()) {
                         stage ('Deploy Prod') {
-                            def prodTag = "$dockerImageName:latest-dev";
+                            def prodTag = "$dockerImageName:latest-prod";
                             dockerHelper.tag(dockerLocalTag, prodTag)
                             dockerHelper.pushImage(prodTag)
                             dockerHelper.removeImage(prodTag)
