@@ -19,10 +19,10 @@ def build(Map args = [:]) {
         def dockerLocalTag = "jenkins__${safeJobName}__${timestamp}"
         def dockerBuilderTag = dockerLocalTag + "__builder"
 
-        withEnv(["DOCKER_TAG=${dockerLocalTag}", "TIMESTAMP=${timestamp}"]) {
+        withEnv(["DOCKER_TAG=${dockerLocalTag}", "DOCKER_BUILDER_TAG=${dockerBuilderTag}", "TIMESTAMP=${timestamp}"]) {
             try {
                 stage ('Build') {
-                    sh "make docker-builder"
+                    sh "make docker"
                 }
 
                 withCredentials([string(credentialsId: ejsonCredentialsId, variable: "EJK_" + ejsonPublicKey)]) {
