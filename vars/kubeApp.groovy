@@ -27,7 +27,10 @@ def build(Map args = [:]) {
 
                 docker.image(dockerBuilderTag).inside() {
                     withCredentials([string(credentialsId: ejsonCredentialsId, variable: "EJK")]) {
-                        sh "echo \"\$EJK\" > /opt/ejson/keys/${ejsonPublicKey}"
+                        sh """
+                            mkdir -p /opt/ejson/keys
+                            echo \"\$EJK\" > /opt/ejson/keys/${ejsonPublicKey}
+                        """
 
                         stage ('Unit Tests') {
                             sh "echo "
