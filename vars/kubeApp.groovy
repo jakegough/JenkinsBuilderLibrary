@@ -9,7 +9,7 @@ def build(Map args = [:]) {
     def devCluster = args.get('devCluster', 'k3s-general');
     def devNamespace = args.get('devNamespace', '');
     def prodCluster = args.get('prodCluster', 'k3s-general');
-    def prodNamespace = args.get('devNamespace', '');
+    def prodNamespace = args.get('prodNamespace', '');
 
     helper.run('linux && make && docker', {
         def timestamp = helper.getTimestamp()
@@ -43,11 +43,11 @@ def build(Map args = [:]) {
 
                     if (devCluster && branches.isDevelopBranch()) {
                         stage ('Deploy Dev') {
-                            kubectl.inside(devCluster,
+                            kubectl.inside(devCluster) {
                                 sh """
                                     kubectl rollout restart deployment/app -n $devNamespace
                                     kubectl rollout status deployment/app -n $devNamespace --timeout=5m
-                                """)
+                                """}
                         }
                     }
 
@@ -60,11 +60,11 @@ def build(Map args = [:]) {
                             dockerHelper.pushImage(prodTag)
                             dockerHelper.removeImage(prodTag)
 
-                            kubectl.inside(prodCluster,
+                            kubectl.inside(prodCluster) {
                                 sh """
                                     kubectl rollout restart deployment/app -n $prodNamespace
                                     kubectl rollout status deployment/app -n $prodNamespace --timeout=5m
-                                """)
+                                """}
                         }
                         stage ('Integration Tests') { }
                     }
