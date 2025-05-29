@@ -19,7 +19,7 @@ def getClusterSpec(String clusterId) {
     def clusterSpecs = [
         "k3s-general": [
             kubeConfigFileCredentialsId: 'k3s-general-kubeconfig',
-            kubectlImage: 'bitnami/kubectl:v1.33.1'
+            kubectlImage: 'bitnami/kubectl:1.33.1'
         ]
     ]
 
