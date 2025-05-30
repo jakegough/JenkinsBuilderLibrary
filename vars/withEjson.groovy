@@ -1,4 +1,4 @@
-def run(String ejsonCredentialsId, Closure callback) {
+def call(String ejsonCredentialsId, Closure callback) {
 
     withCredentials([usernamePassword(
         credentialsId: ejsonCredentialsId,
