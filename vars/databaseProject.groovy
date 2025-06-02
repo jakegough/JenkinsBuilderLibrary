@@ -8,25 +8,17 @@ def build(Map args = [:]) {
 
     helper.run('linux && make && docker', {
         try {
-            stage ('Build') {
-                sh "make clean build"
-            }
-            stage ('Test Migration') {
-                sh "make test"
-            }
-            if (branches.isDeploymentBranch()){
-                withEjson(ejsonPublicKey) {
-                    if (branches.isDevelopBranch()){
-                        stage ('Migrate Dev') {
-                            sh "make migrate-dev"
-                        }
-                    }
+            withEjson(ejsonPublicKey) {
+                stage ('Build') { sh "make clean build" }
 
-                    if (branches.isMasterBranch()){
-                        stage ('Migrate Prod') {
-                            sh "make migrate-prod"
-                        }
-                    }
+                stage ('Test Migration') { sh "make test" }
+
+                if (branches.isDevelopBranch()) {
+                    stage ('Migrate Dev') { sh "make migrate-dev" }
+                }
+
+                if (branches.isMasterBranch()) {
+                    stage ('Migrate Prod') { sh "make migrate-prod" }
                 }
             }
         }
