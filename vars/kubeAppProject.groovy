@@ -1,8 +1,5 @@
 def build(Map args = [:]) {
 
-    def gitHubUsername = args.get('gitHubUsername', 'jakegough-homelab');
-    def gitHubRepository = args.get('gitHubRepository', 'missing_gitHubRepository');
-    def gitHubTokenCredentialsId = args.get('gitHubTokenCredentialsId', 'github-jakegough-homelab-token');
     def dockerRegistryCredentialsId = args.get('dockerRegistryCredentialsId', 'homelab-docker-container-registry');
     def dockerRegistry = args.get('dockerRegistry', 'container-registry.homelab.jaytwo.com');
     def dockerImageName = args.get('dockerImageName', 'missing_dockerImageName');
@@ -11,6 +8,15 @@ def build(Map args = [:]) {
     def prodCluster = args.get('prodCluster', 'k3s-general');
     def prodNamespace = args.get('prodNamespace', '');
     def ejsonCredentialsId = args.get('ejsonCredentialsId', 'missing_ejsonCredentialsId');
+    def devEnvironment = args.get('devEnvironment', 'Development');
+    def devDockerImageTag = args.get('devDockerImageTag', 'latest-dev');
+    def prodEnvironment = args.get('prodEnvironment', 'Production');
+    def prodDockerImageTag = args.get('prodDockerImageTag', 'latest-prod');
+
+    def helper = load 'helper.groovy'
+    helper.gitHubUsername = args.get('gitHubUsername', 'jakegough-homelab');
+    helper.gitHubRepository = args.get('gitHubRepository', 'missing_gitHubRepository');
+    helper.gitHubTokenCredentialsId = args.get('gitHubTokenCredentialsId', 'github-jakegough-homelab-token');
 
     helper.run('linux && make && docker', {
         def timestamp = helper.getTimestamp()
@@ -39,7 +45,7 @@ def build(Map args = [:]) {
                 if (branches.isDeploymentBranch()) {
                     stage ('Push Image') {
                         dockerHelper.login(dockerRegistryCredentialsId, dockerRegistry)
-                        dockerTagAndPush(dockerLocalTag, "$dockerRegistry/$dockerImageName:latest-dev")
+                        dockerTagAndPush(dockerLocalTag, "$dockerRegistry/$dockerImageName:$devDockerImageTag")
                     }
 
                     if (branches.isDevelopBranch() && devNamespace) {
@@ -50,7 +56,7 @@ def build(Map args = [:]) {
                         stage ('Integration Tests') {
                             withEjson(ejsonCredentialsId) {
                                 docker.image(dockerBuilderTag).inside() {
-                                    sh "make integration-test TEST_ENV=Production"
+                                    sh "make integration-test TEST_ENV=$devEnvironment"
                                 }
                             }
                         }
@@ -59,7 +65,7 @@ def build(Map args = [:]) {
                     if (branches.isMasterBranch() && prodNamespace) {
                         stage ('Promote Image') {
                             dockerHelper.login(dockerRegistryCredentialsId, dockerRegistry)
-                            dockerTagAndPush(dockerLocalTag, "$dockerRegistry/$dockerImageName:latest-prod")
+                            dockerTagAndPush(dockerLocalTag, "$dockerRegistry/$dockerImageName:$prodDockerImageTag")
                         }
 
                         stage ('Deploy Prod') {
@@ -69,7 +75,7 @@ def build(Map args = [:]) {
                         stage ('Integration Tests') {
                             withEjson(ejsonCredentialsId) {
                                 docker.image(dockerBuilderTag).inside() {
-                                    sh "make integration-test TEST_ENV=Production"
+                                    sh "make integration-test TEST_ENV=$prodEnvironment"
                                 }
                             }
                         }
