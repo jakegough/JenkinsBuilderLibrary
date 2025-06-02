@@ -13,7 +13,6 @@ def build(Map args = [:]) {
     def prodEnvironment = args.get('prodEnvironment', 'Production');
     def prodDockerImageTag = args.get('prodDockerImageTag', 'latest-prod');
 
-    def helper = load 'helper.groovy'
     helper.gitHubUsername = args.get('gitHubUsername', 'jakegough-homelab');
     helper.gitHubRepository = args.get('gitHubRepository', 'missing_gitHubRepository');
     helper.gitHubTokenCredentialsId = args.get('gitHubTokenCredentialsId', 'github-jakegough-homelab-token');
