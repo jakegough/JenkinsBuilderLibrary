@@ -7,7 +7,7 @@ def build(Map args = [:]) {
     def devNamespace = args.get('devNamespace', '');
     def prodCluster = args.get('prodCluster', 'k3s-general');
     def prodNamespace = args.get('prodNamespace', '');
-    def ejsonCredentialsId = args.get('ejsonCredentialsId', 'missing_ejsonCredentialsId');
+    def ejsonPublicKey = args.get('ejsonPublicKey', 'missing_ejsonPublicKey');
     def devEnvironment = args.get('devEnvironment', 'Development');
     def devDockerImageTag = args.get('devDockerImageTag', 'latest-dev');
     def prodEnvironment = args.get('prodEnvironment', 'Production');
@@ -29,14 +29,14 @@ def build(Map args = [:]) {
                     sh "make docker"
                 }
 
-                withEjson(ejsonCredentialsId) {
+                withEjson(ejsonPublicKey) {
                     docker.image(dockerBuilderTag).inside() {
                         stage ('Unit Tests') {
                             sh "make unit-test"
                         }
 
                         stage ('Integration Tests') {
-                            sh "make integration-test"
+                            makeIntegrationTest(ejsonPublicKey, "")
                         }
                     }
                 }
@@ -53,10 +53,8 @@ def build(Map args = [:]) {
                         }
 
                         stage ('Integration Tests') {
-                            withEjson(ejsonCredentialsId) {
-                                docker.image(dockerBuilderTag).inside() {
-                                    sh "make integration-test TEST_ENV=$devEnvironment"
-                                }
+                            docker.image(dockerBuilderTag).inside() {
+                                makeIntegrationTest(ejsonPublicKey, devEnvironment)
                             }
                         }
                     }
@@ -72,10 +70,8 @@ def build(Map args = [:]) {
                         }
 
                         stage ('Integration Tests') {
-                            withEjson(ejsonCredentialsId) {
-                                docker.image(dockerBuilderTag).inside() {
-                                    sh "make integration-test TEST_ENV=$prodEnvironment"
-                                }
+                            docker.image(dockerBuilderTag).inside() {
+                                makeIntegrationTest(ejsonPublicKey, prodEnvironment)
                             }
                         }
                     }
@@ -102,4 +98,10 @@ def kubectlRolloutRestart(String clusterId, String namespace) {
             kubectl rollout restart deployment/app -n $namespace
             kubectl rollout status deployment/app -n $namespace --timeout=5m
         """}
+}
+
+def makeIntegrationTest(String ejsonPublicKey, String prodEnvironment) {
+    withEjson(ejsonPublicKey) {
+        sh "make integration-test TEST_ENV=$prodEnvironment"
+    }
 }

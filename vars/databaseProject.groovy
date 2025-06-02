@@ -1,9 +1,10 @@
 def build(Map args = [:]) {
 
-    def gitHubUsername = args.get('gitHubUsername', 'jakegough-homelab');
-    def gitHubRepository = args.get('gitHubRepository', 'missing_gitHubRepository');
-    def gitHubTokenCredentialsId = args.get('gitHubTokenCredentialsId', 'github-jakegough-homelab-token');
-    def ejsonCredentialsId = args.get('ejsonCredentialsId', 'missing_ejsonCredentialsId');
+    def ejsonPublicKey = args.get('ejsonPublicKey', 'missing_ejsonPublicKey');
+
+    helper.gitHubUsername = args.get('gitHubUsername', 'jakegough-homelab');
+    helper.gitHubRepository = args.get('gitHubRepository', 'missing_gitHubRepository');
+    helper.gitHubTokenCredentialsId = args.get('gitHubTokenCredentialsId', 'github-jakegough-homelab-token');
 
     helper.run('linux && make && docker', {
         try {
@@ -14,7 +15,7 @@ def build(Map args = [:]) {
                 sh "make test"
             }
             if (branches.isDeploymentBranch()){
-                withEjson(ejsonCredentialsId) {
+                withEjson(ejsonPublicKey) {
                     if (branches.isDevelopBranch()){
                         stage ('Migrate Dev') {
                             sh "make migrate-dev"

@@ -1,11 +1,10 @@
-def call(String ejsonCredentialsId, Closure callback) {
+def call(String ejsonPublicKey, Closure callback) {
 
-    withCredentials([usernamePassword(
-        credentialsId: ejsonCredentialsId,
-        usernameVariable: 'ejson_public_key',
-        passwordVariable: 'ejson_private_key')]) {
+    withCredentials([string(
+        credentialsId: "EJK_$ejsonPublicKey",
+        variable: 'ejson_private_key')]) {
 
-        def ejsonEnvVar = "EJK_${ejson_public_key}=${ejson_private_key}"
+        def ejsonEnvVar = "EJK_${ejsonPublicKey}=${ejson_private_key}"
         withEnv([ejsonEnvVar]) {
             callback()
         }
