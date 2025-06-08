@@ -1,7 +1,7 @@
 def build(Map args = [:]) {
 
     def dockerRegistryCredentialsId = args.get('dockerRegistryCredentialsId', 'homelab-docker-container-registry');
-    def dockerRegistry = args.get('dockerRegistry', 'container-registry.homelab.jaytwo.com');
+    def dockerRegistry = args.get('dockerRegistry', 'container-registry.jaytwo.net');
     def dockerImageName = args.get('dockerImageName', 'missing_dockerImageName');
     def devCluster = args.get('devCluster', 'k3s-general');
     def devNamespace = args.get('devNamespace', '');
