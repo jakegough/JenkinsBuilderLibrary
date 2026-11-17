@@ -31,7 +31,7 @@ def build(Map args = [:]) {
         def safeJobName = helper.getSafeJobName()
         def dockerLocalTag = "jenkins__${safeJobName}__${timestamp}"
         def dockerBuilderTag = dockerLocalTag + "__builder"
-        def dockerInsideArgs = ""
+        def dockerInsideArgs = "--init"
 
         echo "TIMESTAMP: $timestamp"
         echo "DOCKER_TAG: $dockerLocalTag"
@@ -40,7 +40,7 @@ def build(Map args = [:]) {
         if (enableTesterNet) {
             def dockerComposeProjectName = dockerLocalTag + "__testernet"
             def dockerComposeNetwork = dockerComposeProjectName + "_default"
-            dockerInsideArgs = "-e TEST_ENV=testernet --network ${dockerComposeNetwork}"
+            dockerInsideArgs += " -e TEST_ENV=testernet --network ${dockerComposeNetwork}"
         }
 
         withEnv(["DOCKER_TAG=${dockerLocalTag}", "DOCKER_BUILDER_TAG=${dockerBuilderTag}", "TIMESTAMP=${timestamp}"]) {
