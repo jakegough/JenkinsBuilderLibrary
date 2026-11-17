@@ -8,7 +8,7 @@ def inside(String clusterId, Closure callback) {
 
     def image = docker.image(clusterSpec.kubectlImage)
     image.pull()
-    image.inside('--entrypoint ""') {
+    image.inside('--init --entrypoint ""') {
         withCredentials([file(credentialsId: clusterSpec.kubeConfigFileCredentialsId, variable: 'KUBECONFIG')]) {
             callback()
         }

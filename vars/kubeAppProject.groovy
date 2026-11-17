@@ -30,7 +30,7 @@ def build(Map args = [:]) {
                 }
 
                 withEjson(ejsonPublicKey) {
-                    docker.image(dockerBuilderTag).inside() {
+                    docker.image(dockerBuilderTag).inside('--init') {
                         stage ('Unit Tests') {
                             sh "make unit-test"
                         }
@@ -53,7 +53,7 @@ def build(Map args = [:]) {
                         }
 
                         stage ('Integration Tests') {
-                            docker.image(dockerBuilderTag).inside() {
+                            docker.image(dockerBuilderTag).inside('--init') {
                                 makeIntegrationTest(ejsonPublicKey, devEnvironment)
                             }
                         }
@@ -70,7 +70,7 @@ def build(Map args = [:]) {
                         }
 
                         stage ('Integration Tests') {
-                            docker.image(dockerBuilderTag).inside() {
+                            docker.image(dockerBuilderTag).inside('--init') {
                                 makeIntegrationTest(ejsonPublicKey, prodEnvironment)
                             }
                         }
